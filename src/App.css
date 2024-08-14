@@ -1,6 +1,26 @@
 .App {
   text-align: center;
 }
+body {
+  font-family: 'spoqaHansSansNeo';
+
+}
+
+.modal {
+  margin-top: 20px;
+  padding: 20px;
+  background: #eee;
+}
+.black-nav {
+  background: #fafafa;
+  width: 1920px;
+  height: 100px;
+  display: flex;
+  color: black;
+  padding: 20px;
+  font-weight: 600;
+  font-size: 20px;
+}
 
 .App-logo {
   height: 40vmin;
