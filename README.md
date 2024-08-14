@@ -68,3 +68,17 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+
+ PublicGroupList 공개그룹 목록 페이지
+ PrivateGroupList 비공개 그룹 목록 페이지
+ CreateGroup 그룹 만들기 페이지
+ CheckPrivateGroup 비공개 그룹 접근 권한 확인 페이지
+ ViewPublicGroupDetail 그룹 상세 페이지 - 공개 추억
+ ViewPrivateGroupDetail 그룹 상세 페이지 - 비공개 추억
+ CreatePost 추억 작성 페이지
+ CheckPrivatePost 비공개 추억 접근 권한 확인 페이지
+ ViewPostDetail 추억 상세 페이지
+ Not 404 페이지
+# ZOGAKZIP-FE
