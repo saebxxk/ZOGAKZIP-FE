@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchPublicGroups } from '../api/groupAPI';
+import { fetchGroups } from '../api/groupAPI';
 
 
 function PublicGroupList() {
@@ -8,7 +8,7 @@ function PublicGroupList() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetchPublicGroups()
+        fetchGroups()
             .then(response => {
                 setGroups(response.data);
                 setLoading(false);
@@ -34,7 +34,7 @@ function PublicGroupList() {
                         <p>{group.description}</p>
                         <p>디데이: {group.dDay}일</p>
                         <p>배지 수: {group.badgeCount}</p>
-                        <p>추억 수: {group.memoryCount}</p>
+                        <p>추억 수: {group.postCount}</p>
                         <p>공감 수: {group.likeCount}</p>
                     </li>
                 ))}
