@@ -9,6 +9,7 @@ import './App.css';
 
 function App() {
   return(
+   
     <div className="App">
       <Header />
       <main>
@@ -17,24 +18,9 @@ function App() {
       <Footer />
     
     </div>
+   
   );
 }
-
-
-
-function Modal(){
-  return(
-    <div className="box">
-      <h4>Title</h4>
-      <p>Contents</p>
-      <span>Date</span>
-    </div>
-  )
-}
-
-
-
-
 
 
 export default App;

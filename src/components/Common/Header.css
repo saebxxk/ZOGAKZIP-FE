@@ -5,13 +5,13 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #FAFAFA;
+    background-color: black;
 }
 
 .logo {
     font-size: 24px;
     font-weight: bold;
-    color: white;
+    color: black;
     text-decoration: none;
 }
 

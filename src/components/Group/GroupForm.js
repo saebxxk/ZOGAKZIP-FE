@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { useNaviate } from 'react-router-dom';
-import { createGroup, updateGroup } from '../../api/groupAPI';
+import { useNavigate } from 'react-router-dom'; //페이지 이동처리
+import { createGroup, updateGroup } from '../../api/groupAPI'; //그룹 생성, 업데이트를 위한 API호출 함수를 가져옴
 
 function GroupForm({ group, isEditMode }) {
     const [formData, setFormData] = useState({
         name: group?.name || '',
         image: group?.image || '',
         description: group?.description || '',
-        isPubllic: group?.isPublic || true,
+        isPublic: group?.isPublic || true,
         password: ''
     });
     
@@ -16,7 +16,7 @@ function GroupForm({ group, isEditMode }) {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prevState => ({ ...prevState, [name]: value }));
-    };
+    }; // 폼 필드 변경시 호출
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -27,7 +27,7 @@ function GroupForm({ group, isEditMode }) {
         }).catch(error => {
             console.error('Error submitting the form:', error);
         });
-    };
+    }; //폼이 제출될 때 호출
 
     return (
         <form onSubmit={handleSubmit}>

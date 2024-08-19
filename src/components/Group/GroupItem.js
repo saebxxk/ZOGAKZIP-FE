@@ -11,9 +11,10 @@ function GroupItem({ group }) {
             <p>배지 수: {group.badgeCount}</p>
             <p>추억 수: {group.postCount}</p>
             <p>공감 수: {group.likeCount}</p>
-            <Link to={`/view-group-detail/${group.id}`}>상세 보기</Link>
+            <Link to={`/view-group-detail/${group.id}`}>상세 보기</Link> 
+            
         </div>
     );
 }
-
+//개별 그룹의 정보 보여주기
 export default GroupItem;
