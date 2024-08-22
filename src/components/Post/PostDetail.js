@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { fetchPostById, likePost, verifyPostPassword } from '../../api/postAPI';
+import { fetchPostById, likePost, verifyPostPassword, checkPostIsPublic } from '../../api/postAPI';
+import CommentList from '../Comment/CommentList';
+import CommentForm from '../Comment/CommentForm';
 
 function PostDetail() {
   const { postId } = useParams();
@@ -82,6 +84,10 @@ function PostDetail() {
           <p>공감 수: {post.likeCount}</p>
           <p>댓글 수: {post.commentCount}</p>
           <button onClick={handleLike}>공감하기</button>
+
+          <h2>comments</h2>
+          <CommentList postId={postId} />
+          <CommentForm postId={postId} />
         </>
       ) : (
         <form onSubmit={handlePasswordSubmit}>
