@@ -1,9 +1,13 @@
-import React from 'react'
+import React from 'react';
+import GroupForm from '../components/Group/GroupForm';
 
-const CreateGroup = () => {
-    return(
-        <div>CreateGroup</div>
-    )
+function CreateGroup() {
+  return (
+    <div className="create-group">
+      <h1>Create a New Group</h1>
+      <GroupForm isEditMode={false} />
+    </div>
+  );
 }
 
-export default CreateGroup
+export default CreateGroup;

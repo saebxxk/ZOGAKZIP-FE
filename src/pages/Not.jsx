@@ -1,9 +1,13 @@
-import React from 'react'
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-const Not = () => {
+function Not() {
     return(
-        <div>Not</div>
-    )
+        <div className="not-found">
+            <h1>404 Not Found</h1>
+            <Link to="/">Go back</Link>
+        </div>
+    );
 }
 
 export default Not
