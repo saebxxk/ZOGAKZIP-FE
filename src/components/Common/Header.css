@@ -5,21 +5,14 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: black;
+    background-color: blue;
+    position: relative;
 }
 
 .logo {
-    font-size: 24px;
-    font-weight: bold;
-    color: black;
-    text-decoration: none;
-}
-
-.navList {
-    list-style: none;
-    display: flex;
-    gap: 15px;
-    margin: 0;
-    padding: 0;
+    width: 100px;
+    height: auto;
 
 }
+
+

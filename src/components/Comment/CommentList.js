@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchCommentsByPostId } from '../../api/commentAPI';
+import { fetchCommentByPostId } from '../../api/commentAPI';
 import CommentItem from './CommentItem';
 
 function CommentList({ postId }) {
@@ -8,7 +8,7 @@ function CommentList({ postId }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchCommentsByPostId(postId)
+    fetchCommentByPostId(postId)
       .then(response => {
         setComments(response.data);
         setLoading(false);

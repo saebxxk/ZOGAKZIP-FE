@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, BrowserRouter } from "react-router-dom";
 import PublicGroupList from "../pages/PublicGroupList";
 import PrivateGroupList from "../pages/PrivateGroupList";
 import CreateGroup from "../pages/CreateGroup";
@@ -10,10 +10,12 @@ import CreatePost from "../pages/CreatePost";
 import CheckPrivatePost from "../pages/CheckPrivatePost";
 import ViewPostDetail from "../pages/ViewPostDetail";
 import Not from "../pages/Not";
+import Header from "../components/Common/Header";
 
 function AppRouter(){
     return(
         <Router>
+            <Header />
             <Routes>
                 <Route path="/" element={<PublicGroupList />}/>
                 <Route path="/private-group-list" element={<PrivateGroupList />}/>
@@ -25,7 +27,8 @@ function AppRouter(){
                 <Route path="/check-private-post" element={<CheckPrivatePost />}/>
                 <Route path="/view-post-detail/:postId" element={<ViewPostDetail />}/>
                 <Route path="*" element={<Not />}/> {/*404페이지*/}
-
+                
+                
             </Routes>
         </Router>
     );
