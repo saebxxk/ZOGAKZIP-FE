@@ -1,19 +1,27 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import './Header.css';
 import logo from '../../assets/icons/logo.svg';
 
 function Header() { 
-    console.log('Header is rendering');
+    const location = useLocation();
+    const showCreateGroupButton = location.pathname === '/' || location.pathname === '/private-group-list';
+
     return (
        <header className='header'>
-        <br />
-        <Link to='/' >
-        <img src={logo} alt="logo" className="logo" />
-        </Link>
-        <br />
+            <div className='header-content'>
+                <Link to='/'>
+                    <img src={logo} alt="logo" className="logo" />
+                </Link>
+                {showCreateGroupButton && (
+                    <Link to="/create-group" className="create-group-button-link">
+                        <button className="create-group-button">
+                            그룹 만들기
+                        </button>
+                    </Link>
+                )}
+            </div>
        </header>
-        
     );
 }
 

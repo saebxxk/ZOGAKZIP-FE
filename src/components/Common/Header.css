@@ -1,18 +1,51 @@
+/* Header.css */
+
 .header {
-    width: 1920px;
+    width: 100%;  /* 전체 너비를 100%로 설정 */
     height: 100px;
     padding: 10px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    background-color: blue;
+    background-color: #fafafa;
     position: relative;
 }
 
-.logo {
-    width: 100px;
-    height: auto;
-
+.header-content {
+    display: flex;
+    align-items: center;  /* 수직 중앙 정렬 */
+    justify-content: center;
+    width: 100%;
+    max-width: 1200px; /* 최대 너비 설정 (원하는 너비로 조정) */
+    position: relative;  /* 버튼의 절대 위치 기준 */
 }
+
+.logo {
+    max-height: 80px;
+    margin: 0; /* 중앙 정렬 */
+}
+
+.create-group-button {
+    position: absolute;
+    right: 10px; /* 오른쪽 가장자리에서 10px 떨어진 위치 */
+    top: 50%; /* 수직 중앙 */
+    transform: translateY(-50%); /* 수직 중앙 조정 */
+    padding: 10px 20px;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 6px;
+    border: none;
+}
+
+.create-group-button:hover {
+    background-color: #333;
+}
+
+
+
+
+
 
 

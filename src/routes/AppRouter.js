@@ -11,6 +11,7 @@ import CheckPrivatePost from "../pages/CheckPrivatePost";
 import ViewPostDetail from "../pages/ViewPostDetail";
 import Not from "../pages/Not";
 import Header from "../components/Common/Header";
+import Footer from "../components/Common/Footer";
 
 function AppRouter(){
     return(
@@ -30,6 +31,7 @@ function AppRouter(){
                 
                 
             </Routes>
+            
         </Router>
     );
 }
