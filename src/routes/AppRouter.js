@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, BrowserRouter } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Switch} from "react-router-dom";
 import PublicGroupList from "../pages/PublicGroupList";
 import PrivateGroupList from "../pages/PrivateGroupList";
 import CreateGroup from "../pages/CreateGroup";
