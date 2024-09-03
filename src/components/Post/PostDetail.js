@@ -3,6 +3,9 @@ import { useParams } from 'react-router-dom';
 import { fetchPostById, likePost, verifyPostPassword, checkPostIsPublic } from '../../api/postAPI';
 import CommentList from '../Comment/CommentList';
 import CommentForm from '../Comment/CommentForm';
+import editIcon from '../../assets/icons/icon=edit.svg';
+import deleteIcon from '../../assets/icons/icon=delete.svg';
+import closeIcon from '../../assets/icons/icon=x.svg';
 
 function PostDetail() {
   const { postId } = useParams();
@@ -15,7 +18,11 @@ function PostDetail() {
   const [modalType, setModalType] = useState('');
 
   //   댓글 모달 창
+  
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false); // 댓글 수정 모달 상태 추가
+  const [currentComment, setCurrentComment] = useState(null); // 수정할 댓글 데이터 저장
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // 삭제 모달 상태 추가
   const [nickname, setNickname] = useState('');
   const [comment, setComment] = useState('');
   const [commentPassword, setCommentPassword] = useState('');
@@ -34,6 +41,41 @@ function PostDetail() {
     nickname: 'user123',
     momentDate: '2024-08-03',
   };
+
+  //댓글 목 데이터
+  const mockComments = [
+    {
+      id: 1,
+      nickname: 'user456',
+      content: '정말 아름다운 순간이에요! 공유해 주셔서 감사합니다.',
+      timestamp: '2024-08-03 14:35',
+    },
+    {
+      id: 2,
+      nickname: 'travel_guru',
+      content: '저도 이곳을 정말 좋아해요! 좋은 게시물입니다!',
+      timestamp: '2024-08-03 15:20',
+    },
+    {
+      id: 3,
+      nickname: 'sunset_lover',
+      content: '일몰은 정말 최고죠, 이 사진 속 일몰은 더욱 멋지네요!',
+      timestamp: '2024-08-03 16:45',
+    },
+    {
+      id: 4,
+      nickname: 'anonymous',
+      content: '이곳은 사람이 많이 붐비나요? 곧 방문할 예정입니다.',
+      timestamp: '2024-08-03 17:30',
+    },
+    {
+      id: 5,
+      nickname: 'user789',
+      content: '이 사진에서 평온함이 느껴지네요.',
+      timestamp: '2024-08-03 18:05',
+    },
+  ];
+  
 
   useEffect(() => {
 
@@ -92,13 +134,41 @@ function PostDetail() {
     setIsCommentModalOpen(false);
   };
 
+  const openEditModal = (comment) => {
+    setCurrentComment(comment);
+    setIsEditModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
+    setCurrentComment(null);
+  };
+
+  const openDeleteModal = (comment) => {
+    setCurrentComment(comment);
+    setIsDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setCurrentComment(null);
+  };
+
   const handleSubmitComment = () => {
     // 댓글 등록 로직 구현
-    console.log('닉네임:', nickname);
-    console.log('댓글:', comment);
-    console.log('비밀번호:', commentPassword);
     closeCommentModal(); // 등록 후 모달 닫기
   };
+
+  const handleEditComment = () => {
+    // 댓글 수정 로직
+    closeEditModal(); // 수정 후 모달 닫기
+  };
+
+  const handleDeleteComment = () => {
+    // 댓글 삭제 로직
+    closeDeleteModal(); // 삭제 후 모달 닫기
+  };
+
 
 
 
@@ -203,15 +273,39 @@ function PostDetail() {
         <p style={{ fontSize: '16px', textAlign: 'center' }}>{post.description}</p>
         <button onClick={openCommentModal} style={{ fontSize: '14px', padding: '10px 20px', width: '300px', height: '40px', borderRadius:'6px', backgroundColor: 'black', color: 'white', cursor: 'pointer', marginBottom: '40px' }}>댓글 등록하기</button>
 
-        <p style={{ fontSize: '14px', alignSelf: 'flex-start', margin: 0}}>댓글</p>
+        <p style={{ fontSize: '14px', alignSelf: 'flex-start', margin: 0}}>댓글 {post.commentCount}</p>
       </div>
 
 
       
 
        {/* 하단부 */}
-       <div className="post-comments" style={{ padding: '20px' }}>
-        <h2 style={{ fontSize: '18px' }}>comments</h2>
+       <div className="post-comments" style={{ padding: '10px' }}>
+        
+        <ul style={{ listStyleType: 'none', padding: 0 }}>
+        {mockComments.map(comment => (
+          <li key={comment.id} style={{ marginBottom: '10px', padding: '10px', borderBottom: '1px solid #ccc', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ textAlign: 'left', flex: 1 }}>
+              <p style={{ fontSize: '14px', marginBottom: '5px' }}>
+                <strong>{comment.nickname}</strong>
+                <span style={{ fontSize: '12px', color: '#999', marginLeft: '10px' }}>{comment.timestamp}</span>
+              </p>
+              <p style={{ fontSize: '14px', margin: 0 }}>{comment.content}</p>
+            </div>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button onClick={() => openEditModal(comment)} style={{ backgroundColor: 'white', border: 'none', cursor: 'pointer', padding: 0 }}>
+                <img src={editIcon} alt="Edit" style={{ width: '16px', height: '16px' }} />
+              </button>
+              <button onClick={() => openDeleteModal(comment)} style={{ backgroundColor: 'white', border: 'none', cursor: 'pointer', padding: 0 }}>
+                <img src={deleteIcon} alt="Delete" style={{ width: '16px', height: '16px' }} />
+              </button>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+
+
         {/* <CommentList postId={postId} /> */}
         {/* <CommentForm postId={postId} /> */}
       </div>
@@ -250,9 +344,63 @@ function PostDetail() {
           </div>
         </div>
       )}
+        {/* 댓글 수정 모달 */}
+{isEditModalOpen && (
+  <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+    <div className="modal-content" style={{ backgroundColor: 'white', padding: '20px', borderRadius: '8px', width: '480px', height: '700px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+      <h2 style={{ fontSize: '24px', textAlign: 'center', marginBottom: '20px' }}>댓글 수정</h2>
+      <div className="input-group" style={{ marginBottom: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <label style={{ fontSize: '14px', textAlign: 'left' }}>닉네임</label>
+        <input 
+          type="text" 
+          value={nickname} 
+          onChange={(e) => setNickname(e.target.value)} 
+          placeholder="닉네임을 입력해 주세요"
+          style={{ padding: '10px', fontSize: '14px' }} />
+      </div>
+      <div className="input-group" style={{ marginBottom: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <label style={{ fontSize: '14px',textAlign: 'left' }}>댓글</label>
+        <textarea value={comment} 
+          onChange={(e) => setComment(e.target.value)} 
+          placeholder="댓글을 입력해 주세요"
+          style={{ padding: '10px', fontSize: '14px', height: '150px' }} />
+      </div>
+      <div className="input-group" style={{ marginBottom: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <label style={{ fontSize: '14px', textAlign: 'left' }}>비밀번호</label>
+        <input type="password" 
+          value={commentPassword} 
+          onChange={(e) => setCommentPassword(e.target.value)} 
+          placeholder="비밀번호를 입력해 주세요"
+          style={{ padding: '10px', fontSize: '14px' }} />
+      </div>
+      <button onClick={handleEditComment} style={{ width: '400px', height: '50px', backgroundColor: 'black', color: 'white', fontSize:'16px', borderRadius: '6px', padding: '10px', cursor: 'pointer', alignSelf: 'center' }}>수정하기</button>
+    </div>
+  </div>
+)}
 
 
+      {/* 댓글 삭제 모달 */}
+      {isDeleteModalOpen && (
+        <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <div className="modal-content" style={{ backgroundColor: 'white', padding: '20px', borderRadius: '8px', width: '450px', height: '335px', position: 'relative' }}>
+            <img src={closeIcon} alt="Close" style={{ position: 'absolute', top: '10px', right: '10px', cursor: 'pointer', width: '16px', height: '16px' }} onClick={closeDeleteModal} />
+            <h2 style={{ fontSize: '20px', textAlign: 'center', marginBottom: '40px' }}>댓글 삭제</h2>
+            <p style={{ fontSize: '16px', textAlign: 'left', marginBottom: '15px' }}>삭제 권한 인증</p>
+            <div className="input-group" style={{ marginBottom: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <input 
+                type="password" 
+                value={commentPassword} 
+                onChange={(e) => setCommentPassword(e.target.value)} 
+                placeholder="비밀번호를 입력해 주세요"
+                style={{ padding: '10px', fontSize: '14px', marginBottom: '50px'}} />
+            </div>
+            <button onClick={handleDeleteComment} style={{ width: '100%', height: '50px', backgroundColor: 'black', color: 'white', fontSize:'16px', borderRadius: '6px', cursor: 'pointer' }}>삭제하기</button>
+          </div>
+        </div>
+      )}
 
+
+      
       {/* 모달 */}
       {isModalOpen && (
         <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

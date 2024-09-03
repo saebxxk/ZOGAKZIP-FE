@@ -7,6 +7,8 @@ function CheckPrivatePost() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const [modalOpen, setModalOpen] = useState(false); // 모달 상태 추가
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -16,7 +18,12 @@ function CheckPrivatePost() {
       })
       .catch(() => {
         setError('Incorrect password.');
+        setModalOpen(true); // 비밀번호 틀리면 모달 열기
       });
+  };
+
+  const handleModalClose = () => {
+    setModalOpen(false); // 모달 닫기
   };
 
   return (
@@ -55,8 +62,49 @@ function CheckPrivatePost() {
             제출하기
             </button>
         </form>
-        {error && <p className="error" style={{ color: 'red' }}>{error}</p>}
       </div>
+      {/* 모달 */}
+      {modalOpen && (
+        <div style={{
+          position: 'fixed',
+          top: '0',
+          left: '0',
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: '1000'
+        }}>
+          <div style={{
+            width: '480px',
+            backgroundColor: 'white',
+            padding: '20px',
+            borderRadius: '8px',
+            textAlign: 'center',
+            boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)'
+          }}>
+            <h2>비공개 추억 접근 실패</h2>
+            <p>비밀번호가 일치하지 않습니다.</p>
+            <button onClick={handleModalClose} style={{
+              marginTop: '20px',
+              padding: '10px 20px',
+              backgroundColor: 'black',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '16px'
+            }}>
+              확인
+            </button>
+          </div>
+        </div>
+      )}
+
+
+
     </div>
   );
 }

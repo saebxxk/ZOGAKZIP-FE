@@ -10,6 +10,13 @@ function GroupForm({ group, isEditMode }) {
   const [isPublic, setIsPublic] = useState(group?.isPublic || true);
   const [password, setPassword] = useState('');
 
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalTitle, setModalTitle] = useState('');
+  const [modalMessage, setModalMessage] = useState('');
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [newGroupId, setNewGroupId] = useState(null);
+
+
   const navigate = useNavigate();
 
   const handleImageChange = (e) => {
@@ -36,11 +43,31 @@ function GroupForm({ group, isEditMode }) {
     const apiCall = isEditMode ? updateGroup(group.id, groupData) : createGroup(groupData);
 
     apiCall.then(() => {
-      navigate('/');
+      // 그룹 생성 성공
+      setModalTitle('그룹 만들기 성공');
+      setModalMessage('그룹이 성공적으로 등록되었습니다.');
+      setIsSuccess(true);
+      setModalOpen(true);
     }).catch(error => {
+      // 그룹 생성 실패
       console.error('Error submitting the form:', error);
+      setModalTitle('그룹 만들기 실패');
+      setModalMessage('그룹 등록에 실패하였습니다.');
+      setIsSuccess(false);
+      setModalOpen(true);
     });
   };
+
+  const handleModalConfirm = () => {
+    setModalOpen(false);
+    if (isSuccess) {
+      const detailPagePath = isPublic
+        ? `/view-public-group-detail/${newGroupId}`
+        : `/view-private-group-detail/${newGroupId}`;
+      navigate(detailPagePath);  // 성공 시 그룹 상세 페이지로 이동
+    }
+  };
+      
 
   return (
     <div className="create-group">
@@ -193,6 +220,48 @@ function GroupForm({ group, isEditMode }) {
             </button>
         </div>
       </form>
+
+      {modalOpen && (
+        <div style={{
+          position: 'fixed',
+          top: '0',
+          left: '0',
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: '1000'
+        }}>
+          <div style={{
+            width: '480px',
+            backgroundColor: 'white',
+            padding: '20px',
+            borderRadius: '8px',
+            textAlign: 'center',
+            boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)'
+          }}>
+            <h2>{modalTitle}</h2>
+            <p>{modalMessage}</p>
+            <button onClick={handleModalConfirm} style={{
+              marginTop: '20px',
+              padding: '10px 20px',
+              backgroundColor: 'black',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '16px'
+            }}>
+              확인
+            </button>
+          </div>
+        </div>
+      )}
+
+
+
     </div>
   );
 }
