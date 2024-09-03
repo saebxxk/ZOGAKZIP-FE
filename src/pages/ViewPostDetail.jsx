@@ -7,7 +7,7 @@ function ViewPostDetail() {
 
   return (
     <div className="view-post-detail">
-      <h1>Post Detail</h1>
+      
       <PostDetail postId={postId} />
     </div>
   );

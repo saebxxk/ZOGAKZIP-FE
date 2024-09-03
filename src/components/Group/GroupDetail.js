@@ -2,6 +2,23 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchGroupById, checkGroupIsPublic, verifyGroupPassword } from '../../api/groupAPI';
 
+
+const mockGroups = [
+    {
+    id: 1,
+    name: '비공개 그룹 2',
+    createdAt: '2023-02-01',
+    postCount: 12,
+    likeCount: 5,
+    isPublic: false,
+    description: '비공개 그룹 2 설명입니다.',
+    image: 'https://via.placeholder.com/200', // Placeholder 이미지
+    dDay: 200,
+    badges: ['배지 3', '배지 4'],    
+}
+];
+
+
 function GroupDetail() {
     const { groupId } = useParams();
     const [group, setGroup] = useState(null);
@@ -9,8 +26,28 @@ function GroupDetail() {
     const [error, setError] = useState(null);
     const [isPublic, setIsPublic] = useState(true); // 그룹 공개 여부
     const [password, setPassword] = useState('');
+    
+    
 
     useEffect(() => {
+
+       
+        const group = mockGroups.find(g => g.id === parseInt(groupId));
+        if (group) {
+            setIsPublic(group.isPublic);
+            if (group.isPublic) {
+                setGroup(group);
+                setLoading(false);
+            } else {
+                setLoading(false); // 비공개 그룹일 경우 비밀번호 입력 대기
+            }
+        } else {
+            setError('그룹을 찾을 수 없습니다.');
+            setLoading(false);
+        }
+        
+        
+        {/*}
         fetchGroupById(groupId)
             .then(response => {
                 setGroup(response.data.isPublic);
@@ -25,10 +62,22 @@ function GroupDetail() {
                 setError('Failed to load group details.');
                 setLoading(false);
             });
+
+            */}
     }, [groupId]);
 
     const loadGroupDetails = () => {
-        fetchGroupById(groupId)
+        
+        const group = mockGroups.find(g => g.id === parseInt(groupId));
+        if (group) {
+            setGroup(group);
+            setLoading(false);
+        } else {
+            setError('그룹을 찾을 수 없습니다.');
+            setLoading(false);
+        }
+        
+        {/*fetchGroupById(groupId)
             .then(response => {
                 setGroup(response.data);
                 setLoading(false);
@@ -37,13 +86,23 @@ function GroupDetail() {
                 setError('Faild to load group details.');
                 setLoading(false);
             });
+
+            */}
     };
 
     const handlePasswordSubmit = (e) => {
         e.preventDefault();
         setLoading(true);
 
-        verifyGroupPassword(groupId, password)
+        // 비공개 그룹에 대한 비밀번호 검증 (임시로 모든 비밀번호를 '1234'로 설정)
+        if (password === '1234') {
+            loadGroupDetails(); // 비밀번호가 맞으면 그룹 정보 로드
+        } else {
+            setError('비밀번호가 틀렸습니다.');
+            setLoading(false);
+        }
+
+        {/*verifyGroupPassword(groupId, password)
             .then(() => {
                 loadGroupDetails(); //비밀번호가 맞으면 그룹 정보 로드
             })
@@ -51,6 +110,7 @@ function GroupDetail() {
                 setError('Incorrect password');
                 setLoading(false);
             });
+            */}
     };
 
     if (loading) return <p>Loading...</p>;
@@ -58,7 +118,7 @@ function GroupDetail() {
 
     return (
         <div className="group-detail">
-            {isPublic || group ? (
+             {group && group.isPublic ?(
                 <>
                     <img src={group.image} alt={group.name} style={{ width: '200px', height: '200px'}} />
                     <h1>{group.name}</h1>
@@ -87,3 +147,4 @@ function GroupDetail() {
 }
 
 export default GroupDetail;
+

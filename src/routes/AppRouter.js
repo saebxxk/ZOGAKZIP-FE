@@ -23,7 +23,7 @@ function AppRouter(){
                 <Route path="/create-group" element={<CreateGroup />}/>
                 <Route path="/check-private-group" element={<CheckPrivateGroup />}/>
                 <Route path="/view-public-group-detail" element={<ViewPublicGroupDetail />}/>
-                <Route path="/view-private-group-detail" element={<ViewPrivateGroupDetail />}/>
+                <Route path="/view-private-group-detail/:groupId" element={<ViewPrivateGroupDetail />}/>
                 <Route path="/create-post" element={<CreatePost />}/>
                 <Route path="/check-private-post" element={<CheckPrivatePost />}/>
                 <Route path="/view-post-detail/:postId" element={<ViewPostDetail />}/>
