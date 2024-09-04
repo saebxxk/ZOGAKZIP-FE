@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = 'https://zogakzip-bmoe.onrender.com';
 // 1. 게시글 등록 
 export const createPost = (groupId, postData) => {
   return axios.post(`${API_BASE_URL}/api/groups/${groupId}/posts`, postData);

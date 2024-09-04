@@ -31,7 +31,7 @@ function CheckPrivateGroup() {
   
   
     return (
-      <div className="check-private-group" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <div className="check-private-group" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', transform: 'translateY(-200px)' }}>
         <div style={{ width: '400px', height: '313px', padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'center' }}>
           <h1 style={{ fontSize: '24px', marginBottom: '10px' }}>비공개 그룹</h1>
           <p style={{ fontSize: '14px', marginTop: '0px' }}>비공개 그룹에 접근하기 위해 권한 확인이 필요합니다.</p>

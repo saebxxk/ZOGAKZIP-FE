@@ -61,9 +61,10 @@ function PublicGroupList() {
         //그룹 생성 페이지로 이동
     };
 
+    // 공개 그룹이므로 항상 공개 그룹 상세 페이지로 이동
     const handleGroupClick = (groupId) => {
-        navigate(`/group/${groupId}`); // 그룹의 상세 페이지로 이동
-    };
+        navigate(`/view-public-group-detail/${groupId}`);
+      };
 
     const handleShowMore = () => {
         setVisibleGroups(prev => prev + 4);
@@ -224,7 +225,7 @@ function PublicGroupList() {
                                             borderRadius: '5px',
                                             fontWeight: 'bold'
                                         }}>
-                                            | 비공개
+                                            | 공개
                                         </div>
                                     </div>
 

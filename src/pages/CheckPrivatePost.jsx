@@ -27,7 +27,7 @@ function CheckPrivatePost() {
   };
 
   return (
-    <div className="check-private-post" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+    <div className="check-private-post" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', transform: 'translateY(-200px)' }}>
       <div style={{ width: '400px', height: '313px', padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'center' }}>
 
         <h1 style={{ fontSize: '24px', marginBottom: '20px' }}>비공개 추억</h1>

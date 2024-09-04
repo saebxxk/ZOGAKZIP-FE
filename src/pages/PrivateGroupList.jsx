@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { fetchPrivateGroups } from '../api/groupAPI'; // 비공개 그룹을 가져오는 API 함수
 import groupIcon from '../assets/icons/groupicon.svg';
 
-
 function PrivateGroupList() {
     const navigate = useNavigate();
 
@@ -15,42 +14,17 @@ function PrivateGroupList() {
     const [visibleGroups, setVisibleGroups] = useState(24);
 
     useEffect(() => {
-      // 백엔드가 없으므로 목 데이터를 사용하여 테스트
-      const mockGroups = [
-        {
-            id: 1,
-            name: '비공개 그룹 1',
-            createdAt: '2023-01-01',
-            postCount: 10,
-            likeCount: 5,
-        },
-        {
-            id: 2,
-            name: '비공개 그룹 2',
-            createdAt: '2023-02-01',
-            postCount: 8,
-            likeCount: 3,
-        },
-        // 필요한 만큼 그룹 추가 (24개 미만으로 테스트 가능)
-    ];
-
-    setGroups(mockGroups);
-    setLoading(false);
-        
-
-
-      {/*fetchPrivateGroups()  // 비공개 그룹을 가져오는 API 호출
+      // 비공개 그룹을 가져오는 API 호출
+      fetchPrivateGroups()
             .then(response => {
                 setGroups(response.data);
                 setLoading(false);
             })
             .catch(error => {
                 console.error('Error fetching private groups:', error);
-                setError('Failed to load private groups.');
+                setError('비공개 그룹을 불러오는 데 실패했습니다.');
                 setLoading(false);
             });
-
-            */}
     }, []);
 
     const handlePublicClick = () => {
@@ -71,17 +45,19 @@ function PrivateGroupList() {
 
     const handleCreateGroupClick = () => {
       navigate('/create-group');
-      //그룹 생성 페이지로 이동
-  };
-
-    const handleGroupClick = (groupId) => {
-      navigate('/group/${groupId}');
+      // 그룹 생성 페이지로 이동
     };
+
+    // 비공개 그룹이므로 항상 CheckPrivateGroup 페이지로 이동
+    const handleGroupClick = (groupId) => {
+        navigate(`/check-private-group/${groupId}`);
+    };
+
 
     const handleShowMore = () => {
       setVisibleGroups(prev => prev + 4); 
       // 더보기 버튼을 누르면 4개씩 증가
-    }
+    };
 
     return (
         <div style={{ padding: '20px', width: '100%', position: 'relative' }}>
@@ -183,7 +159,6 @@ function PrivateGroupList() {
                         <div style={{
                             width: '1300px', 
                             height: '700px', 
-                            
                             borderRadius: '20px',
                             padding: '20px',
                             display: 'grid',
@@ -191,8 +166,6 @@ function PrivateGroupList() {
                             gridAutoRows: 'minmax(140px, auto)', // 고정된 높이
                             gap: '20px',
                             margin: 'auto', // 가운데 정렬
-                            
-                            
                         }}>
                             {groups
                                 .filter(group => group.name.includes(searchQuery))
@@ -345,5 +318,6 @@ function PrivateGroupList() {
 }
 
 export default PrivateGroupList;
+
 
   

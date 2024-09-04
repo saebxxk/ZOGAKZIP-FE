@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { createGroup, updateGroup } from '../../api/groupAPI.js';
 
 function GroupForm({ group, isEditMode }) {
-  const [groupName, setGroupName] = useState(group?.name || '');
+  const [name, setGroupName] = useState(group?.name || '');
   const [image, setImage] = useState(null);
   const [imageName, setImageName] = useState(group?.image || '');
   const [description, setDescription] = useState(group?.description || '');
@@ -34,11 +34,14 @@ function GroupForm({ group, isEditMode }) {
 
     // FormData 객체 생성
   const formData = new FormData();
-  formData.append('groupName', groupName);
+  formData.append('name', name);
   formData.append('image', image); // 이미지 파일 전송
   formData.append('description', description);
   formData.append('isPublic', isPublic);
   formData.append('password', isPublic ? '' : password); // 비공개일 경우 비밀번호 추가
+  formData.forEach((value, key) => {
+    console.log(key, value);
+  });
 
     const apiCall = isEditMode ? updateGroup(group.id, formData) : createGroup(formData);
 
@@ -78,7 +81,7 @@ function GroupForm({ group, isEditMode }) {
                 <label style={{ display: 'block', radius: '6px', marginBottom: '5px', textAlign: 'left' }}>그룹명</label>
                 <input
                   type="text"
-                  value={groupName}
+                  value={name}
                   onChange={(e) => setGroupName(e.target.value)}
                   placeholder="그룹명을 입력하세요"
                   required
