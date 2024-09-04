@@ -1,5 +1,6 @@
 {
   "homepage": "http://zogakzip.react.codeit.s3-website-ap-southeast-2.amazonaws.com",
+  "proxy": "https://zogakzip-bmoe.onrender.com",
 
   "name": "zogakzip",
   "version": "0.1.0",
@@ -44,4 +45,5 @@
       "last 1 safari version"
     ]
   }
+  
 }

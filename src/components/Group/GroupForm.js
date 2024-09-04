@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createGroup, updateGroup } from '../../api/groupAPI';
+import { createGroup, updateGroup } from '../../api/groupAPI.js';
 
 function GroupForm({ group, isEditMode }) {
   const [groupName, setGroupName] = useState(group?.name || '');
@@ -32,15 +32,15 @@ function GroupForm({ group, isEditMode }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const groupData = {
-      groupName,
-      image,
-      description,
-      isPublic,
-      password: isPublic ? '' : password,
-    };
+    // FormData 객체 생성
+  const formData = new FormData();
+  formData.append('groupName', groupName);
+  formData.append('image', image); // 이미지 파일 전송
+  formData.append('description', description);
+  formData.append('isPublic', isPublic);
+  formData.append('password', isPublic ? '' : password); // 비공개일 경우 비밀번호 추가
 
-    const apiCall = isEditMode ? updateGroup(group.id, groupData) : createGroup(groupData);
+    const apiCall = isEditMode ? updateGroup(group.id, formData) : createGroup(formData);
 
     apiCall.then(() => {
       // 그룹 생성 성공

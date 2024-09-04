@@ -1,14 +1,15 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://zogakzip-bmoe.onrender.com';
 
 
 
 
 // 1. 그룹 등록
 export const createGroup = (groupData) => {
-  return axios.post(`${API_BASE_URL}/api/groups`, groupData);
+  return axios.post('https://zogakzip-bmoe.onrender.com/api/groups', groupData);
 };
+
 
 // 2. 그룹 목록 조회
 export const fetchGroups = async () => {
