@@ -32,17 +32,16 @@ function CreateGroup({ group, isEditMode }) {
     e.preventDefault();
 
     // FormData 객체 생성
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('image', image); // 이미지 파일 전송
-    formData.append('description', description);
-    formData.append('isPublic', isPublic);
-    formData.append('password', password); // 비밀번호 필수
-    formData.forEach((value, key) => {
-      console.log(key, value);
-    });
+    // JSON 데이터를 전송
+      const payload = {
+      name,
+      description,
+      isPublic,
+      password,
+    
+    };
 
-    const apiCall = isEditMode ? updateGroup(group.id, formData) : createGroup(formData);
+    const apiCall = isEditMode ? updateGroup(group.id, payload) : createGroup(payload);
 
     apiCall.then((response) => {
       // 그룹 생성 성공

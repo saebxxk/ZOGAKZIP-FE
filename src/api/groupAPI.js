@@ -3,8 +3,14 @@ import axios from 'axios';
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://zogakzip-bmoe.onrender.com';
 
 // 1. 그룹 등록 (그룹 생성)
-export const createGroup = (formData) => {
-  return axios.post(`${API_BASE_URL}/api/groups`, formData);
+export const createGroup = (payload) => {
+  
+  return axios.post(`https://zogakzip-bmoe.onrender.com/api/groups`, payload)
+    .then(response => response.data)
+    .catch(error => {
+      console.error('Error creating group:', error);
+      throw error;
+    });
 };
 
 // 2. 공개 그룹 목록 조회
