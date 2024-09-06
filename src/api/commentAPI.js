@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = 'https://zogakzip-bmoe.onrender.com';
 
 //1. 댓글 등록
 export const createComment = (postId, commentData) => {
