@@ -1,17 +1,17 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import PublicGroupList from "../pages/PublicGroupList";
-import PrivateGroupList from "../pages/PrivateGroupList";
-import CreateGroup from "../pages/CreateGroup";
-import CheckPrivateGroup from "../pages/CheckPrivateGroup";
-import ViewPublicGroupDetail from "../pages/ViewPublicGroupDetail";
-import ViewPrivateGroupDetail from "../pages/ViewPrivateGroupDetail";
-import CreatePost from "../pages/CreatePost";
-import CheckPrivatePost from "../pages/CheckPrivatePost";
-import ViewPostDetail from "../pages/ViewPostDetail";
-import Not from "../pages/Not";
-import Header from "../components/Common/Header";
-import Footer from "../components/Common/Footer";
+import PublicGroupList from "../pages/PublicGroupList.jsx";
+import PrivateGroupList from "../pages/PrivateGroupList.jsx";
+import CreateGroup from "../pages/CreateGroup.jsx";
+import CheckPrivateGroup from "../pages/CheckPrivateGroup.jsx";
+import ViewPublicGroupDetail from "../pages/ViewPublicGroupDetail.jsx";
+import ViewPrivateGroupDetail from "../pages/ViewPrivateGroupDetail.jsx";
+import CreatePost from "../pages/CreatePost.jsx";
+import CheckPrivatePost from "../pages/CheckPrivatePost.jsx";
+import ViewPostDetail from "../pages/ViewPostDetail.jsx";
+import Not from "../pages/Not.jsx";
+import Header from "../components/Common/Header.js";
+import Footer from "../components/Common/Footer.js";
 
 function AppRouter() {
   return (

@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { fetchGroupById, updateGroup, verifyGroupPassword } from '../api/groupAPI'; // 그룹 데이터 가져오기
 import groupIcon from '../assets/icons/groupicon.svg'; // 아이콘 경로
-import editIcon from '../assets/icons/icon=edit.svg';
-import deleteIcon from '../assets/icons/icon=delete.svg';
 import closeIcon from '../assets/icons/icon=x.svg';
 import { likeGroup } from '../api/groupAPI';
 
@@ -43,6 +41,7 @@ function ViewPrivateGroupDetail() {
       const response = await verifyGroupPassword(groupId, groupPassword);
       if (response.status === 200) {
         setIsVerified(true);
+        fetchGroupData();
         alert('비밀번호 인증 성공!');
       } else {
         alert('비밀번호가 틀렸습니다.');
@@ -50,6 +49,22 @@ function ViewPrivateGroupDetail() {
     } catch (error) {
       console.error('비밀번호 인증 실패:', error);
       alert('비밀번호 인증에 실패했습니다.');
+    }
+  };
+
+  const fetchGroupData = async () => {
+    try {
+      const response = await fetchGroupById(groupId);
+      if (response.status === 200) {
+        setGroupData(response.data);
+        setLikeCount(response.data.likeCount);
+      } else {
+        setError('그룹 정보를 가져오지 못했습니다.');
+      }
+    } catch (error) {
+      setError('그룹 정보를 가져오는 중 오류가 발생했습니다.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -96,27 +111,10 @@ function ViewPrivateGroupDetail() {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetchGroupById(groupId);
-        if (response.status === 200) {
-          setGroupData(response.data);
-          setGroupName(response.data.name);
-          setDescription(response.data.description);
-          setIsPublic(response.data.isPublic);
-          setImageName(response.data.imageName);
-          setLikeCount(response.data.likeCount);
-        } else {
-          setError('Failed to fetch group data.');
-        }
-      } catch (error) {
-        setError('Error fetching group data.');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [groupId]);
+    if (isVerified) {
+      fetchGroupData();
+    }
+  }, [isVerified]);
 
   const handlePublicClick = () => {
     setFilter('공개'); // 공개 필터 적용
@@ -150,7 +148,7 @@ function ViewPrivateGroupDetail() {
 
   // 비밀번호가 인증되지 않았을 경우 비밀번호 입력 화면 표시
 
-  {/*}
+  
   if (!isVerified) {
     return (
       <div className="group-password-container" style={{ padding: '20px' }}>
@@ -182,7 +180,7 @@ function ViewPrivateGroupDetail() {
       </div>
     );
   }
-    */}
+    
 
   return (
     <div className="group-detail-container" style={{ width: '80%', margin: '0 auto', border: '1px solid #ccc', padding: '20px', borderRadius: '8px' }}>
