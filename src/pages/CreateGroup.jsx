@@ -28,18 +28,39 @@ function CreateGroup({ group, isEditMode }) {
     setIsPublic(!isPublic);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // FormData 객체 생성
-    // JSON 데이터를 전송
-      const payload = {
-      name,
-      description,
-      isPublic,
-      password,
-    
-    };
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('description', description);
+    formData.append('isPublic', isPublic);
+    formData.append('password', password);
+    if (image) {
+      formData.append('image', image); // 이미지 파일 추가
+    }
+
+    try {
+      const response = isEditMode
+        ? await updateGroup(group.id, formData)
+        : await createGroup(formData);
+  
+      const groupId = response?.id;
+      setNewGroupId(groupId);
+      setModalTitle('그룹 만들기 성공');
+      setModalMessage('그룹이 성공적으로 등록되었습니다.');
+      setIsSuccess(true);
+      setModalOpen(true);
+    } catch (error) {
+      console.error('Error submitting the form:', error);
+      setModalTitle('그룹 만들기 실패');
+      setModalMessage(error.response?.data?.message || '그룹 등록에 실패했습니다.');
+      setIsSuccess(false);
+      setModalOpen(true);
+    }
+  };
+
 
     const apiCall = isEditMode ? updateGroup(group.id, payload) : createGroup(payload);
 

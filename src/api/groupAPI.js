@@ -22,6 +22,32 @@ export const createGroup = async (payload) => {
   }
 };
 
+
+// 2. 공개 그룹 목록 조회
+export const fetchGroups = async () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        status: 200,
+        data: [
+          {
+            id: 2,
+            name: '공개 그룹 1',
+            description: '이것은 첫 번째 공개 그룹입니다.',
+            isPublic: true,
+          },
+          {
+            id: 4,
+            name: '공개 그룹 2',
+            description: '두 번째 공개 그룹입니다.',
+            isPublic: true,
+          },
+        ],
+      });
+    }, 500); // 네트워크 지연을 흉내내기 위한 딜레이
+  });
+};
+{/*}
 // 2. 공개 그룹 목록 조회
 export const fetchGroups = async () => {
   try {
@@ -31,7 +57,7 @@ export const fetchGroups = async () => {
     console.error('Error fetching public groups:', error);
     throw error; // 에러 발생 시 호출하는 쪽에서 처리할 수 있도록 던집니다
   }
-};
+};*/}
 
 // 3. 그룹 수정 (그룹 정보 업데이트)
 export const updateGroup = async (groupId, groupData) => {
@@ -44,6 +70,24 @@ export const deleteGroup = async (groupId) => {
 };
 
 // 5. 그룹 상세 정보 조회 (공개 그룹 및 비공개 그룹)
+export const fetchGroupById = (groupId) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        status: 200,
+        data: {
+          id: groupId,
+          name: `그룹 ${groupId}`,
+          description: `이것은 ID가 ${groupId}인 그룹의 상세 정보입니다.`,
+          isPublic: groupId % 2 === 0, // 짝수 ID는 공개 그룹
+        },
+      });
+    }, 500);
+  });
+};
+
+{/*}
+// 5. 그룹 상세 정보 조회 (공개 그룹 및 비공개 그룹)
 export const fetchGroupById = async (groupId) => {
   return axios.get(`https://zogakzip-bmoe.onrender.com/api/groups/${groupId}`)
     .then(response => response.data)
@@ -51,13 +95,39 @@ export const fetchGroupById = async (groupId) => {
       console.error(`Error fetching group with ID ${groupId}:`, error);
       throw error;
     });
-};
+};*/}
 
 // 6. 비공개 그룹에 접근할 수 있는지 비밀번호 확인
 export const verifyGroupPassword = async (groupId, password) => {
   return axios.post(`https://zogakzip-bmoe.onrender.com/api/groups/${groupId}/verify-password`, { password });
 };
 
+// 7. 비공개 그룹 목록 조회
+export const fetchPrivateGroups = async () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        status: 200,
+        data: [
+          {
+            id: 3,
+            name: '비공개 그룹 1',
+            description: '첫 번째 비공개 그룹입니다.',
+            isPublic: false,
+            password: '0000',
+          },
+          {
+            id: 4,
+            name: '비공개 그룹 2',
+            description: '두 번째 비공개 그룹입니다.',
+            isPublic: false,
+          },
+        ],
+      });
+    }, 500); // 네트워크 지연을 흉내내기 위한 딜레이
+  });
+};
+{/*}
 // 7. 비공개 그룹 목록 조회
 export const fetchPrivateGroups = async () => {
   try {
@@ -68,6 +138,7 @@ export const fetchPrivateGroups = async () => {
     throw error;
   }
 };
+*/}
 
 // 8. 그룹 공감 (좋아요 기능)
 export const likeGroup = (groupId) => {
