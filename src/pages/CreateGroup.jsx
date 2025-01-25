@@ -62,25 +62,9 @@ function CreateGroup({ group, isEditMode }) {
   };
 
 
-    const apiCall = isEditMode ? updateGroup(group.id, payload) : createGroup(payload);
+    //const apiCall = isEditMode ? updateGroup(group.id, payload) : createGroup(payload);
 
-    apiCall.then((response) => {
-      // 그룹 생성 성공
-      const groupId = response.data?.id;  // Assuming response contains group ID
-      setNewGroupId(groupId);  // 새로 생성된 그룹 ID를 상태로 저장
-      setModalTitle('그룹 만들기 성공');
-      setModalMessage('그룹이 성공적으로 등록되었습니다.');
-      setIsSuccess(true);
-      setModalOpen(true);
-    }).catch((error) => {
-      // 그룹 생성 실패
-      console.error('Error submitting the form:', error);
-      setModalTitle('그룹 만들기 실패');
-      setModalMessage('그룹 등록에 실패하였습니다.');
-      setIsSuccess(false);
-      setModalOpen(true);
-    });
-  };
+  
 
   const handleModalConfirm = () => {
     setModalOpen(false);

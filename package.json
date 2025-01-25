@@ -1,7 +1,6 @@
 {
   "homepage": "http://zogakzip.react.codeit.s3-website-ap-southeast-2.amazonaws.com",
-  "proxy": "https://zogakzip-bmoe.onrender.com",
-
+  "proxy": "https://zogakzip-be-c3c2.onrender.com",
   "name": "zogakzip",
   "version": "0.1.0",
   "private": true,
@@ -10,6 +9,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.4",
+    "cors": "^2.8.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-helmet-async": "^2.0.5",
@@ -45,5 +45,4 @@
       "last 1 safari version"
     ]
   }
-  
 }

@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://zogakzip-bmoe.onrender.com';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://zogakzip-be-c3c2.onrender.com';
 
 // 1. 그룹 등록 (그룹 생성)
 export const createGroup = async (payload) => {
   try {
-    const response = await axios.post(`https://zogakzip-bmoe.onrender.com/api/groups`, payload);
+    const response = await axios.post(`https://zogakzip-be-c3c2.onrender.com/api/groups`, payload);
     
     // 백엔드에서 받은 응답에서 그룹 ID 추출
     const groupId = response.data?.id; 
@@ -60,8 +60,20 @@ export const fetchGroups = async () => {
 };*/}
 
 // 3. 그룹 수정 (그룹 정보 업데이트)
-export const updateGroup = async (groupId, groupData) => {
+{/*export const updateGroup = async (groupId, groupData) => {
   return axios.put(`https://zogakzip-bmoe.onrender.com/api/groups/${groupId}`, groupData);
+};*/}
+
+export const updateGroup = async (groupId, payload) => {
+  try {
+    const response = await axios.put(`${API_BASE_URL}/api/groups/${groupId}`, payload, {
+      headers: { 'Content-Type': 'multipart/form-data' }, // FormData 처리
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error updating group:', error);
+    throw error;
+  }
 };
 
 // 4. 그룹 삭제
