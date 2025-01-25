@@ -34,19 +34,27 @@ function CreateGroup({ group, isEditMode }) {
     // FormData 객체 생성
     const formData = new FormData();
     formData.append('name', name);
-    formData.append('description', description);
+    formData.append('introduction', description);
     formData.append('isPublic', isPublic);
     formData.append('password', password);
     if (image) {
-      formData.append('image', image); // 이미지 파일 추가
+      formData.append('Image', image); // 이미지 파일 추가
     }
 
     try {
       const response = isEditMode
         ? await updateGroup(group.id, formData)
         : await createGroup(formData);
+
+        console.log('응답 데이터:', response); // 응답 데이터 확인
+        const groupId = response?.id || response?.group?.id; // 응답 구조에 따라 id 추출
+        console.log('groupId:', groupId); // groupId 확인
+
+        if (!groupId) {
+          throw new Error('groupId가 반환되지 않았습니다.');
+        }
   
-      const groupId = response?.id;
+      
       setNewGroupId(groupId);
       setModalTitle('그룹 만들기 성공');
       setModalMessage('그룹이 성공적으로 등록되었습니다.');

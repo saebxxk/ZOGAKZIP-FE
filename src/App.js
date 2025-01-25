@@ -13,7 +13,7 @@ function App() {
 
 
     useEffect(() => {
-      fetch('https://zogakzip-bmoe.onrender.com', {
+      fetch('https://zogakzip-be-c3c2.onrender.com', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
