@@ -8,7 +8,7 @@ export const createGroup = async (payload) => {
     const response = await axios.post(`${API_BASE_URL}/api/groups`, payload);
     
     // 백엔드에서 받은 응답에서 그룹 ID 추출
-    const groupId = response.data?.id; 
+    const groupId = response.data?.group?.id; 
 
     if (groupId) {
       return groupId; // 그룹 ID를 반환

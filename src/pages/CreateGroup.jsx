@@ -47,7 +47,7 @@ function CreateGroup({ group, isEditMode }) {
         : await createGroup(formData);
 
         console.log('응답 데이터:', response); // 응답 데이터 확인
-        const groupId = response?.id || response?.group?.id; // 응답 구조에 따라 id 추출
+        const groupId = response.id; // 응답 구조에 따라 id 추출
         console.log('groupId:', groupId); // groupId 확인
 
         if (!groupId) {
