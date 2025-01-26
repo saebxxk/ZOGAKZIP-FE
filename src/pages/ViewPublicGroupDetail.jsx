@@ -163,7 +163,7 @@ const handlePrivateClick = () => {
           <div className="group-title" style={{ padding: '20px 10px', borderBottom: '1px solid #ccc', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ textAlign: 'left' }}>
               {/* 그룹 이름 */}
-              <h1 style={{ fontSize: '30px', marginBottom: '10px', display: 'inline-block' }}>{groupData.name}</h1>
+              <h1 style={{ fontSize: '30px', marginBottom: '10px', display: 'inline-block' }}>{groupData?.name || 'Loading..'}</h1>
               {/* 그룹 설명 */}
               <p style={{ fontSize: '16px', marginTop: '10px', marginBottom: '20px', color: '#555' }}>{groupData.description}</p>
               <div className="group-stats" style={{ fontSize: '18px', display: 'inline-block', marginLeft: '30px' }}>

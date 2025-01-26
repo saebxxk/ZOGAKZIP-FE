@@ -129,31 +129,7 @@ export const verifyGroupPassword = async (groupId, password) => {
   return axios.post(`${API_BASE_URL}/api/groups/${groupId}/verify-password`, { password });
 };
 
-// 7. 비공개 그룹 목록 조회
-{/*export const fetchPrivateGroups = async () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        status: 200,
-        data: [
-          {
-            id: 3,
-            name: '비공개 그룹 1',
-            description: '첫 번째 비공개 그룹입니다.',
-            isPublic: false,
-            password: '0000',
-          },
-          {
-            id: 4,
-            name: '비공개 그룹 2',
-            description: '두 번째 비공개 그룹입니다.',
-            isPublic: false,
-          },
-        ],
-      });
-    }, 500); // 네트워크 지연을 흉내내기 위한 딜레이
-  });
-};*/}
+
 
 // 7. 비공개 그룹 목록 조회
 export const fetchPrivateGroups = async () => {
