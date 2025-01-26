@@ -17,21 +17,15 @@ function PublicGroupList() {
         const fetchData = async () => {
             try {
                 console.log('Fetching public groups...');
-                const response = await fetchGroups();
-                console.log('Response:', response); // response 확인
-                if (response.status === 200) {
-                    console.log('Public groups fetched successfully:', response.data);
-                    setGroups(response.data);
-                } else {
-                    console.error('Failed to fetch public groups with status:', response.status);
+                const publicGroups = await fetchGroups();
+                console.log('Public groups fetched successfully:', publicGroups);
+                setGroups(publicGroups);
+                } catch (error) {
+                    console.error('Error fetching public groups:', error);
                     setError('Failed to load public groups.');
-                }
-            } catch (error) {
-                console.error('Error fetching public groups:', error);
-                setError('Failed to load public groups.');
-            } finally {
-                setLoading(false);
-            }
+                } finally {
+                    setLoading(false);
+                    } 
         };
     
         fetchData();
@@ -187,11 +181,11 @@ function PublicGroupList() {
                             .sort((a, b) => {
                                 // 정렬 옵션에 따른 정렬 로직 구현
                                 if (sortOption === '공감순') {
-                                    return b.likeCount - a.likeCount;
+                                    return (b.likeCount || 0) - (a.likeCount || 0);
                                 } else if (sortOption === '댓글순') {
-                                    return b.commentCount - a.commentCount;
+                                    return (b.commentCount || 0) - (a.commentCount || 0);
                                 } else {
-                                    return new Date(b.createdAt) - new Date(a.createdAt);
+                                    return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
                                 }
                             })
                             .slice(0, visibleGroups)
