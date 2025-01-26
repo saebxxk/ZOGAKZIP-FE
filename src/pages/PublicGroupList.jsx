@@ -11,7 +11,7 @@ function PublicGroupList() {
     const [error, setError] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [sortOption, setSortOption] = useState('공감순');
-    const [visibleGroups, setVisibleGroups] = useState(24);
+    const [visibleGroups, setVisibleGroups] = useState(20);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -61,8 +61,11 @@ function PublicGroupList() {
       };
 
     const handleShowMore = () => {
-        setVisibleGroups(prev => prev + 4);
+        setVisibleGroups(prev => {
+            const newVisibleGroups = prev + 4;
         // 더보기 버튼을 누르면 4개씩 증가
+        return newVisibleGroups;
+        });
     };
 
     return (
@@ -267,7 +270,7 @@ function PublicGroupList() {
                         <button
                             onClick={handleShowMore}
                             style={{
-                                marginTop: '20px',
+                                marginTop: '80px',
                                 width: '1560px',
                                 height: '60px',
                                 border: '1px solid #ccc',

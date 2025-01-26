@@ -6,6 +6,21 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://zogakzip-be-
 export const createGroup = async (payload) => {
   try {
     const response = await axios.post(`${API_BASE_URL}/api/groups`, payload);
+    console.log('응답 데이터:', response.data);
+    // 응답 데이터를 그대로 반환
+    return response.data;
+
+  } catch (error) {
+    console.error('Error creating group:', error);
+    throw error; // 에러를 다시 던져 호출하는 쪽에서 처리하도록 함
+  }
+};
+
+
+{/*// 1. 그룹 등록 (그룹 생성)
+export const createGroup = async (payload) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/api/groups`, payload);
     
     // 백엔드에서 받은 응답에서 그룹 ID 추출
     const groupId = response.data?.group?.id; 
@@ -20,7 +35,7 @@ export const createGroup = async (payload) => {
     console.error('Error creating group:', error);
     throw error; // 에러를 다시 던져 호출하는 쪽에서 처리하도록 함
   }
-};
+};*/}
 
 
 {/*// 2. 공개 그룹 목록 조회
