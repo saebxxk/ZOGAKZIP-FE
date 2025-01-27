@@ -36,18 +36,8 @@ function CreateGroup({ group, isEditMode }) {
     formData.append('name', name);
     formData.append('introduction', description);
     formData.append('isPublic', isPublic);
-
-    // 비공개일 때만 비밀번호 추가
-    if (!isPublic) {
-     if (!password) {
-      setModalTitle('입력 오류');
-      setModalMessage('비공개 그룹은 비밀번호를 필수로 입력해야 합니다.');
-      setIsSuccess(false);
-      setModalOpen(true);
-      return;
-    }
     formData.append('password', password);
-  }
+  
 
 
     
@@ -242,7 +232,7 @@ function CreateGroup({ group, isEditMode }) {
           </div>
         </div>
 
-      {!isPublic && (
+      
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '20px' }}>
           <div style={{ width: '400px', height: '75px' }}>
             <label style={{ display: 'block', radius: '6px', marginBottom: '5px', textAlign: 'left' }}>비밀번호</label>
@@ -251,12 +241,12 @@ function CreateGroup({ group, isEditMode }) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="비밀번호를 입력하세요"
-              required // 비밀번호 비공개에서만  필수
+              required // 비밀번호 항상  필수
               style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
             />
           </div>
         </div>
-      )}
+      
 
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '80px' }}>
           <button
