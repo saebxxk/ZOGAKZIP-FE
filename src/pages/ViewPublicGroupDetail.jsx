@@ -6,6 +6,8 @@ import editIcon from '../assets/icons/icon=edit.svg';
 import deleteIcon from '../assets/icons/icon=delete.svg';
 import closeIcon from '../assets/icons/icon=x.svg';
 import { likeGroup } from '../api/groupAPI';
+import axios from 'axios';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://zogakzip-be-c3c2.onrender.com';
 
 function ViewPublicGroupDetail() {
   const navigate = useNavigate();
@@ -24,6 +26,8 @@ function ViewPublicGroupDetail() {
   const [imageName, setImageName] = useState('');
   const [password, setPassword] = useState('');
   const [likeCount, setLikeCount] = useState(0);
+  const [image, setImage] = useState(null); // ✅ 이미지 상태 추가
+
 
 
   const [isGroupDeleteModalOpen, setIsGroupDeleteModalOpen] = useState(false);
@@ -41,15 +45,78 @@ function ViewPublicGroupDetail() {
 
 
   // 그룹 삭제 처리 함수
-  const handleGroupDelete = () => {
+  {/*const handleGroupDelete = () => {
   // 여기에 그룹 삭제 로직을 추가하면 됩니다.
     console.log('그룹 삭제 비밀번호:', groupPassword);
     closeGroupDeleteModal(); // 삭제 완료 후 모달 닫기
+  };*/}
+
+  const handleGroupDelete = async () => {
+    try {
+      if (!groupPassword) {
+        alert('비밀번호를 입력하세요.');
+        return;
+      }
+  
+      // 백엔드 그룹 삭제 API 요청
+      const response = await axios.delete(`${API_BASE_URL}/api/groups/${groupData.id}`, {
+        data: { password: groupPassword } // 비밀번호 전송
+      });
+  
+      if (response.status === 200) {
+        alert('그룹이 삭제되었습니다.');
+        closeGroupDeleteModal();
+        window.location.href = '/'; // 삭제 후 홈으로 이동
+      } else {
+        throw new Error('삭제 실패');
+      }
+    } catch (error) {
+      console.error('그룹 삭제 오류:', error);
+      alert(error.response?.data?.message || '그룹 삭제에 실패했습니다.');
+    }
   };
 
 
   // 그룹 수정 처리 함수
   const handleGroupUpdate = async (e) => {
+    e.preventDefault();
+  
+    try {
+      if (!groupId) {
+        alert('그룹 ID가 존재하지 않습니다.');
+        return;
+      }
+  
+      // 백엔드에서 요구하는 데이터 형식 확인
+      const updatedData = new FormData();
+      updatedData.append('name', name);
+      updatedData.append('introduction', description); // ✅ 백엔드에서 description이 아니라 introduction일 수 있음
+      updatedData.append('isPublic', isPublic);
+      if (image) {
+        updatedData.append('image', image); // ✅ 이미지 업데이트 추가
+      }
+  
+      console.log('수정 요청 데이터:', updatedData); // 디버깅용 출력
+  
+      // 백엔드 API 요청
+      const response = await updateGroup(groupId, updatedData);
+  
+      if (response.status === 200) {
+        alert('그룹이 성공적으로 수정되었습니다.');
+        closeGroupEditModal();
+        window.location.reload(); // ✅ 수정 후 페이지 새로고침
+      } else {
+        throw new Error(response.data?.message || '그룹 수정 실패');
+      }
+    } catch (error) {
+      console.error('그룹 수정 실패:', error);
+      alert(error.response?.data?.message || '그룹 수정에 실패했습니다.');
+    }
+  };
+  
+
+
+  {/*const handleGroupUpdate = async (e) => {
     e.preventDefault();
     const updatedData = {
       name,
@@ -65,7 +132,7 @@ function ViewPublicGroupDetail() {
       console.error('그룹 수정 실패:', error);
       alert('그룹 수정에 실패했습니다.');
     }
-  };
+  };*/}
 
   // 이미지 변경 핸들러 추가
   const handleImageChange = (e) => {
@@ -165,7 +232,7 @@ const handlePrivateClick = () => {
               {/* 그룹 이름 */}
               <h1 style={{ fontSize: '30px', marginBottom: '10px', display: 'inline-block' }}>{groupData?.name || 'Loading..'}</h1>
               {/* 그룹 설명 */}
-              <p style={{ fontSize: '16px', marginTop: '10px', marginBottom: '20px', color: '#555' }}>{groupData.description}</p>
+              <p style={{ fontSize: '16px', marginTop: '10px', marginBottom: '20px', color: '#555' }}>{groupData?.description}</p>
               <div className="group-stats" style={{ fontSize: '18px', display: 'inline-block', marginLeft: '30px' }}>
                 <span>추억 {groupData.postCount}</span>
                 <span style={{ margin: '0 15px', height: '24px', width: '1px', backgroundColor: '#ccc', display: 'inline-block' }} />

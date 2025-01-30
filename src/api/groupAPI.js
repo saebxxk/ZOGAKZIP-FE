@@ -96,33 +96,35 @@ export const deleteGroup = async (groupId) => {
   return axios.delete(`${API_BASE_URL}/api/groups/${groupId}`);
 };
 
-// 5. 그룹 상세 정보 조회 (공개 그룹 및 비공개 그룹)
-export const fetchGroupById = (groupId) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        status: 200,
-        data: {
-          id: groupId,
-          name: `그룹 ${groupId}`,
-          description: `이것은 ID가 ${groupId}인 그룹의 상세 정보입니다.`,
-          isPublic: groupId % 2 === 0, // 짝수 ID는 공개 그룹
-        },
-      });
-    }, 500);
-  });
+//5 그룹 상세 정보 조회 (공개 그룹 및 비공개 그룹)
+export const fetchGroupById = async (groupId) => {
+  try {
+    // 백엔드 API 요청
+    const response = await axios.get(`${API_BASE_URL}/api/groups/${groupId}`);
+
+    // 응답 데이터 확인 (디버깅)
+    console.log('API 응답:', response.data);
+
+    return {
+      status: response.status,
+      data: {
+        id: groupId,
+        name: response.data.name, // ✅ 여기서 response.data.name 사용
+        description: response.data.introduction,
+        isPublic: response.data.isPublic, // 공개 여부
+      },
+    };
+  } catch (error) {
+    console.error(`그룹 데이터를 불러오는 중 오류 발생: ${error}`);
+    return {
+      status: 500,
+      data: null,
+      error: '그룹 데이터를 가져오는 데 실패했습니다.',
+    };
+  }
 };
 
-{/*}
-// 5. 그룹 상세 정보 조회 (공개 그룹 및 비공개 그룹)
-export const fetchGroupById = async (groupId) => {
-  return axios.get(`https://zogakzip-bmoe.onrender.com/api/groups/${groupId}`)
-    .then(response => response.data)
-    .catch(error => {
-      console.error(`Error fetching group with ID ${groupId}:`, error);
-      throw error;
-    });
-};*/}
+
 
 // 6. 비공개 그룹에 접근할 수 있는지 비밀번호 확인
 export const verifyGroupPassword = async (groupId, password) => {
