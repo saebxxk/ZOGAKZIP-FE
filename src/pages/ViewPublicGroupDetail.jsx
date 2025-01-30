@@ -15,7 +15,7 @@ function ViewPublicGroupDetail() {
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOption, setSortOption] = useState('공감순');
-  const [visibleMemories, setVisibleMemories] = useState(24);
+  const [visibleMemories, setVisibleMemories] = useState(20);
   const [filter, setFilter] = useState('공개'); // 공개/비공개 필터 추가
   const [isGroupEditModalOpen, setIsGroupEditModalOpen] = useState(false);
   const [name, setGroupName] = useState('');

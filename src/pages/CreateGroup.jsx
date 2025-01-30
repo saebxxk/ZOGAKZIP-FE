@@ -37,8 +37,6 @@ function CreateGroup({ group, isEditMode }) {
     formData.append('introduction', description);
     formData.append('isPublic', isPublic);
     formData.append('password', password);
-  
-
 
     
     if (image) {
