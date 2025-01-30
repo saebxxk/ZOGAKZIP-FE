@@ -167,7 +167,7 @@ function PublicGroupList() {
                     <>
                     <div style={{
                         width: '1300px', 
-                        height: '700px', 
+                        height: 'auto', // 고정 높이 제거
                         
                         borderRadius: '20px',
                         padding: '20px',
@@ -270,8 +270,8 @@ function PublicGroupList() {
                         <button
                             onClick={handleShowMore}
                             style={{
-                                marginTop: '80px',
-                                width: '1560px',
+                                marginTop: '20px',
+                                width: '100%',
                                 height: '60px',
                                 border: '1px solid #ccc',
                                 fontSize: '14px',
@@ -281,8 +281,7 @@ function PublicGroupList() {
                                 borderRadius: '6px',
                                 cursor: 'pointer',
                                 display: 'block',
-                                marginLeft: 'auto',
-                                marginRight: 'auto',
+                                margin: 'auto',
                             }}
                         >
                             더보기
