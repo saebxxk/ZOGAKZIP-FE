@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPost, updatePost } from '../api/postAPI';
+import { useParams } from 'react-router-dom';
 
-function CreatePost({ post, isEditMode }) {
+function CreatePost({ post, isEditMode, initialGroupId }) {
   const [nickname, setNickname] = useState('');
   const [title, setTitle] = useState('');
   const [image, setImage] = useState(null);
@@ -14,6 +15,10 @@ function CreatePost({ post, isEditMode }) {
   const [momentDate, setMomentDate] = useState('');
   const [isPublic, setIsPublic] = useState(true);
   const [password, setPassword] = useState('');
+  //const { groupId } = useParams(); // ✅ URL에서 그룹 ID 가져오기
+  const { groupId: paramGroupId } = useParams(); // URL에서 가져오기
+  const [groupId, setGroupId] = useState(paramGroupId || initialGroupId || null);
+  
 
   const navigate = useNavigate();
 
@@ -40,10 +45,49 @@ function CreatePost({ post, isEditMode }) {
     setTags(tags.filter((_, index) => index !== indexToDelete));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!groupId) {
+      alert('그룹 ID를 찾을 수 없습니다.');
+      return;
+    }
+    // ✅ 그룹 ID를 포함한 게시글 데이터
+    const postData = new FormData();
+    postData.append('groupId', groupId);
+    postData.append('nickname', nickname);
+    postData.append('title', title);
+    postData.append('content', content);
+    postData.append('location', location);
+    postData.append('momentDate', momentDate);
+    postData.append('isPublic', isPublic);
+    postData.append('password', password);
+
+    if (image) {
+      postData.append('image', image); // ✅ 이미지 업로드
+    }
+
+    try {
+      const response = isEditMode
+        ? await updatePost(post.id, postData)
+        : await createPost(postData);
+
+      if (response.status === 200 || response.status === 201) {
+        alert('게시글이 성공적으로 생성되었습니다.');
+        navigate(`/group/${groupId}`); // ✅ 그룹 상세 페이지로 이동
+      } else {
+        throw new Error(response.data?.message || '게시글 생성 실패');
+      }
+    } catch (error) {
+      console.error('게시글 생성 오류:', error);
+      alert(error.response?.data?.message || '게시글을 생성하는 중 오류가 발생했습니다.');
+    }
+
+  {/*const handleSubmit = (e) => {
     e.preventDefault();  // 브라우저의 기본 폼 제출 동작을 막지 않음
 
     const postData = {
+      groupId,
       nickname,
       title,
       image,
@@ -61,8 +105,8 @@ function CreatePost({ post, isEditMode }) {
       navigate('/'); // 성공 시 홈으로 이동
     }).catch(error => {
       console.error('Error submitting the form:', error);
-    });
-  };
+    });*/}
+};
 
   return (
     <div className="create-memory" style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto', boxSizing: 'border-box' }}>
