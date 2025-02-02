@@ -27,7 +27,7 @@ function AppRouter() {
         <Route path="/view-private-group-detail/:groupId" element={<ViewPrivateGroupDetail />} />
 
         {/* 포스트 관련 라우트 */}
-        <Route path="/create-post" element={<CreatePost />} />
+        <Route path="/group/:groupId/create-post" element={<CreatePost />} />
         <Route path="/check-private-post" element={<CheckPrivatePost />} />
         <Route path="/view-post-detail/:postId" element={<ViewPostDetail />} />
 

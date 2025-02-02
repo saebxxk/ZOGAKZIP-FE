@@ -92,6 +92,7 @@ function ViewPublicGroupDetail() {
       updatedData.append('name', name);
       updatedData.append('introduction', description); // ✅ 백엔드에서 description이 아니라 introduction일 수 있음
       updatedData.append('isPublic', isPublic);
+      updatedData.append('password', password); // ✅ 비밀번호 추가
       if (image) {
         updatedData.append('image', image); // ✅ 이미지 업데이트 추가
       }
@@ -99,12 +100,22 @@ function ViewPublicGroupDetail() {
       console.log('수정 요청 데이터:', updatedData); // 디버깅용 출력
   
       // 백엔드 API 요청
-      const response = await updateGroup(groupId, updatedData);
+      //const response = await updateGroup(groupId, updatedData);
+      // ✅ `PUT` 요청으로 그룹 수정 요청
+    const response = await axios.put(`${API_BASE_URL}/api/groups/${groupId}`, updatedData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+
   
-      if (response.status === 200) {
+      if (response.status >= 200 && response.status < 300) {
         alert('그룹이 성공적으로 수정되었습니다.');
         closeGroupEditModal();
+        setTimeout(() => {
+        
         window.location.reload(); // ✅ 수정 후 페이지 새로고침
+        //navigate(`/view-public-group-detail/${groupId}`);
+      },100);
+
       } else {
         throw new Error(response.data?.message || '그룹 수정 실패');
       }
@@ -185,7 +196,7 @@ const handlePrivateClick = () => {
 
   const handleShowMore = () => setVisibleMemories((prev) => prev + 4);
   const handleCreateMemoryClick = () => {
-    navigate('/create-post'); // 추억 올리기 페이지로 이동
+    navigate(`/group/${groupId}/create-post`); // 추억 올리기 페이지로 이동
   };
 
   if (loading) return <p>Loading group details...</p>;

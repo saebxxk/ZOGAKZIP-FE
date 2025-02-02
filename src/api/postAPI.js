@@ -1,11 +1,20 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://zogakzip-bmoe.onrender.com';
-// 1. 게시글 등록 
-export const createPost = (groupId, postData) => {
-  return axios.post(`${API_BASE_URL}/api/groups/${groupId}/posts`, postData);
-};
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://zogakzip-be-c3c2.onrender.com';
 
+
+// 1. 게시글 등록 (그룹 내 게시글 생성)
+export const createPost = async (groupId, postData) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/api/groups/${groupId}/posts`, postData);
+    console.log('응답 데이터:', response.data);
+    // 응답 데이터를 그대로 반환
+    return response.data;
+  } catch (error) {
+    console.error('Error creating post:', error);
+    throw error; // 에러를 다시 던져 호출하는 쪽에서 처리하도록 함
+  }
+};
 // 2. 게시글 목록 조회 
 export const fetchPostsByGroupId = (groupId) => {
   return axios.get(`${API_BASE_URL}/api/groups/${groupId}/posts`);

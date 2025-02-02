@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPost, updatePost } from '../api/postAPI';
 import { useParams } from 'react-router-dom';
@@ -15,13 +15,13 @@ function CreatePost({ post, isEditMode, initialGroupId }) {
   const [momentDate, setMomentDate] = useState('');
   const [isPublic, setIsPublic] = useState(true);
   const [password, setPassword] = useState('');
-  //const { groupId } = useParams(); // ✅ URL에서 그룹 ID 가져오기
-  const { groupId: paramGroupId } = useParams(); // URL에서 가져오기
-  const [groupId, setGroupId] = useState(paramGroupId || initialGroupId || null);
+  const { groupId } = useParams(); // ✅ URL에서 그룹 ID 가져오기
+  console.log("📌 현재 가져온 groupId:", groupId);
   
 
   const navigate = useNavigate();
 
+  
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setImage(file);
@@ -48,6 +48,18 @@ function CreatePost({ post, isEditMode, initialGroupId }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    console.log("제출된 데이터 확인:", {
+      groupId,
+      nickname,
+      title,
+      password,
+      content,
+      location,
+      momentDate,
+      isPublic,
+      image,
+    });
+
     if (!groupId) {
       alert('그룹 ID를 찾을 수 없습니다.');
       return;
@@ -59,7 +71,7 @@ function CreatePost({ post, isEditMode, initialGroupId }) {
     postData.append('title', title);
     postData.append('content', content);
     postData.append('location', location);
-    postData.append('momentDate', momentDate);
+    postData.append('moment', momentDate);
     postData.append('isPublic', isPublic);
     postData.append('password', password);
 
@@ -70,16 +82,18 @@ function CreatePost({ post, isEditMode, initialGroupId }) {
     try {
       const response = isEditMode
         ? await updatePost(post.id, postData)
-        : await createPost(postData);
+        : await createPost(groupId, postData);
 
       if (response.status === 200 || response.status === 201) {
+        const newPostId = response.data.id; // ✅ 새로 생성된 게시글 ID 가져오기
         alert('게시글이 성공적으로 생성되었습니다.');
-        navigate(`/group/${groupId}`); // ✅ 그룹 상세 페이지로 이동
+        navigate(`/view-post-detail/${newPostId}`); // ✅ 게시글 상세 페이지로 이동
       } else {
         throw new Error(response.data?.message || '게시글 생성 실패');
       }
     } catch (error) {
       console.error('게시글 생성 오류:', error);
+      console.error("📌 서버 응답:", error.response?.data); // ✅ 서버가 반환한 오류 메시지 확인
       alert(error.response?.data?.message || '게시글을 생성하는 중 오류가 발생했습니다.');
     }
 
