@@ -84,7 +84,13 @@ function CreatePost({ post, isEditMode, initialGroupId }) {
         ? await updatePost(post.id, postData)
         : await createPost(groupId, postData);
 
-      if (response.status === 200 || response.status === 201) {
+      
+        
+          console.log("📌 응답 상태 코드:", response.status); // ✅ 응답 상태 코드 출력
+          console.log("📌 응답 데이터:", response.data); // ✅ 응답 데이터 확인
+          console.log("📌 전체 응답 객체:", response); // 전체 응답 객체 확인
+
+      if (response && response.status ===201 ) {
         const newPostId = response.data.id; // ✅ 새로 생성된 게시글 ID 가져오기
         alert('게시글이 성공적으로 생성되었습니다.');
         navigate(`/view-post-detail/${newPostId}`); // ✅ 게시글 상세 페이지로 이동
@@ -93,7 +99,10 @@ function CreatePost({ post, isEditMode, initialGroupId }) {
       }
     } catch (error) {
       console.error('게시글 생성 오류:', error);
+      console.error("📌 요청 객체:", error.request || "요청 없음");
+      console.error("📌 서버 응답 상태 코드:", error.response?.status || "응답 없음");
       console.error("📌 서버 응답:", error.response?.data); // ✅ 서버가 반환한 오류 메시지 확인
+      console.error("📌 오류 메시지:", error.message || "알 수 없는 오류");
       alert(error.response?.data?.message || '게시글을 생성하는 중 오류가 발생했습니다.');
     }
 
