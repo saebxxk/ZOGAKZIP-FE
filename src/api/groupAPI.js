@@ -17,52 +17,6 @@ export const createGroup = async (payload) => {
 };
 
 
-{/*// 1. 그룹 등록 (그룹 생성)
-export const createGroup = async (payload) => {
-  try {
-    const response = await axios.post(`${API_BASE_URL}/api/groups`, payload);
-    
-    // 백엔드에서 받은 응답에서 그룹 ID 추출
-    const groupId = response.data?.group?.id; 
-
-    if (groupId) {
-      return groupId; // 그룹 ID를 반환
-    } else {
-      throw new Error('그룹 생성 성공, 그러나 그룹 ID가 응답에 포함되지 않음');
-    }
-
-  } catch (error) {
-    console.error('Error creating group:', error);
-    throw error; // 에러를 다시 던져 호출하는 쪽에서 처리하도록 함
-  }
-};*/}
-
-
-{/*// 2. 공개 그룹 목록 조회
-export const fetchGroups = async () => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        status: 200,
-        data: [
-          {
-            id: 2,
-            name: '공개 그룹 1',
-            description: '이것은 첫 번째 공개 그룹입니다.',
-            isPublic: true,
-          },
-          {
-            id: 4,
-            name: '공개 그룹 2',
-            description: '두 번째 공개 그룹입니다.',
-            isPublic: true,
-          },
-        ],
-      });
-    }, 500); // 네트워크 지연을 흉내내기 위한 딜레이
-  });
-};*/}
-
 // 2. 공개 그룹 목록 조회
 export const fetchGroups = async () => {
   try {
@@ -75,10 +29,6 @@ export const fetchGroups = async () => {
 };
 
 // 3. 그룹 수정 (그룹 정보 업데이트)
-{/*export const updateGroup = async (groupId, groupData) => {
-  return axios.put(`https://zogakzip-bmoe.onrender.com/api/groups/${groupId}`, groupData);
-};*/}
-
 export const updateGroup = async (groupId, payload) => {
   try {
     const response = await axios.put(`${API_BASE_URL}/api/groups/${groupId}`, payload, {

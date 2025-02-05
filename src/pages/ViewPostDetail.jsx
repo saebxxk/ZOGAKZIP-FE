@@ -6,6 +6,8 @@ import CommentForm from '../components/Comment/CommentForm';
 import editIcon from '../assets/icons/icon=edit.svg';
 import deleteIcon from '../assets/icons/icon=delete.svg';
 import closeIcon from '../assets/icons/icon=x.svg';
+import axios from 'axios';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://zogakzip-be-c3c2.onrender.com';
 
 function ViewPostDetail() {
   const { postId } = useParams();
@@ -42,56 +44,6 @@ function ViewPostDetail() {
   const [isPostDeleteModalOpen, setIsPostDeleteModalOpen] = useState(false);
   const [deletePassword, setDeletePassword] = useState('');
 
-  
-
-  // 목 데이터
-  const mockPost = {
-    id: 1,
-    image: 'https://via.placeholder.com/200',
-    title: 'Test Post',
-    description: 'This is a test post description.',
-    location: 'Seoul',
-    tags: ['travel', 'fun'],
-    moment: 'A beautiful sunset',
-    likeCount: 10,
-    commentCount: 5,
-    nickname: 'user123',
-    momentDate: '2024-08-03',
-  };
-
-  //댓글 목 데이터
-  const mockComments = [
-    {
-      id: 1,
-      nickname: 'user456',
-      content: '정말 아름다운 순간이에요! 공유해 주셔서 감사합니다.',
-      timestamp: '2024-08-03 14:35',
-    },
-    {
-      id: 2,
-      nickname: 'travel_guru',
-      content: '저도 이곳을 정말 좋아해요! 좋은 게시물입니다!',
-      timestamp: '2024-08-03 15:20',
-    },
-    {
-      id: 3,
-      nickname: 'sunset_lover',
-      content: '일몰은 정말 최고죠, 이 사진 속 일몰은 더욱 멋지네요!',
-      timestamp: '2024-08-03 16:45',
-    },
-    {
-      id: 4,
-      nickname: 'anonymous',
-      content: '이곳은 사람이 많이 붐비나요? 곧 방문할 예정입니다.',
-      timestamp: '2024-08-03 17:30',
-    },
-    {
-      id: 5,
-      nickname: 'user789',
-      content: '이 사진에서 평온함이 느껴지네요.',
-      timestamp: '2024-08-03 18:05',
-    },
-  ];
 
   // 수정 모달을 여는 함수
   const openPostEditModal = () => {
@@ -104,12 +56,6 @@ function ViewPostDetail() {
   };
   
 
-  // 수정 제출 핸들러
-  const handleEditSubmit = (e) => {
-    e.preventDefault();
-    // 제출 처리 로직 추가
-    console.log('수정 제출:', { title, imageName, content, tags, location, momentDate, isPublic });
-  };
 
    // 모달 열기/닫기 함수
    const openPostDeleteModal = () => {
@@ -120,12 +66,7 @@ function ViewPostDetail() {
     setIsPostDeleteModalOpen(false);
   };
 
-  const handleDeletePost = () => {
-    // 추억 삭제 로직 추가
-    console.log('삭제 비밀번호:', deletePassword);
-    // 비밀번호 확인 후 추억 삭제 처리
-    closeDeleteModal(); // 삭제 완료 후 모달 닫기
-  };
+  
 
   // 이미지 변경 핸들러
   const handleImageChange = (e) => {
@@ -155,47 +96,165 @@ function ViewPostDetail() {
   const handleToggleChange = () => {
     setIsPublic((prevIsPublic) => !prevIsPublic);
   };
-
-
   useEffect(() => {
-
-    //테스트
-
-    setIsPublic(true);
-    if (isPublic) {
-      // 게시글 로드
-      loadPostDetails();
-    } else {
-      setLoading(false); // 비공개 게시글일 경우 비밀번호 입력 대기
+    const checkVisibilityAndLoad = async () => {
+      try {
+        // 게시글 공개 여부 확인
+        const visibilityResponse = await checkPostIsPublic(postId);
+        setIsPublic(visibilityResponse.data.isPublic);
+  
+        if (visibilityResponse.data.isPublic) {
+          // 공개 게시글일 경우 데이터 로드
+          const postResponse = await fetchPostById(postId);
+          console.log("📌 게시글 데이터:", postResponse.data);
+          setPost(postResponse.data);
+        } else {
+          // 비공개 게시글일 경우 로딩 종료
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error("게시글 공개 여부 확인 실패:", error);
+        setError("게시글 정보를 불러오는 중 오류가 발생했습니다.");
+        setLoading(false);
+      } finally {
+        setLoading(false); // 항상 실행
+      }
+    };
+  
+    if (postId) {
+      checkVisibilityAndLoad();
     }
-  }, [postId, isPublic]);
-
-  const loadPostDetails = () => {
-    // 목 데이터 사용
-    setPost(mockPost);
-    setLoading(false);
+  }, [postId]);
+  
+  const handleLike = async () => {
+    try {
+      // 먼저 UI 업데이트 (낙관적 업데이트)
+      setPost(prevPost => ({
+        ...prevPost,
+        likeCount: prevPost.likeCount + 1,
+      }));
+  
+      await likePost(postId);
+      
+      // 최신 상태 다시 불러오기
+      const postResponse = await fetchPostById(postId);
+      setPost(postResponse.data);
+    } catch (error) {
+      console.error("좋아요 오류:", error);
+      setError("좋아요를 처리하는 중 오류가 발생했습니다.");
+    }
   };
+  
+  
 
-  const handleLike = () => {
-    // 좋아요 클릭 시, 목 데이터의 likeCount 증가
-    setPost(prevPost => ({
-      ...prevPost,
-      likeCount: prevPost.likeCount + 1,
-    }));
-  };
-
-  const handlePasswordSubmit = (e) => {
+  const handlePasswordSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-
-    // 비밀번호 확인 로직을 단순히 통과시키기
-    if (password === '1234') { // 임의의 비밀번호 설정
-      loadPostDetails(); // 비밀번호가 맞으면 게시글 정보 로드
-    } else {
-      setError('Incorrect password.');
+  
+    try {
+      // 비밀번호 확인 API 호출
+      await verifyPostPassword(postId, password);
+  
+      // 비밀번호 확인 후 게시글 로드
+      const postResponse = await fetchPostById(postId);
+      setPost(postResponse.data);
+      setLoading(false);
+    } catch (error) {
+      console.error("비밀번호 확인 실패:", error);
+      setError("비밀번호가 잘못되었습니다.");
       setLoading(false);
     }
   };
+
+  // 게시글 수정
+  const handleEditPost = async (e) => {
+    e.preventDefault();
+  
+    try {
+      if (!postId) {
+        alert("게시글 ID를 찾을 수 없습니다.");
+        return;
+      }
+  
+      // 게시글 수정할 데이터 준비 (FormData 사용)
+      const updatedData = new FormData();
+      updatedData.append("title", title);
+      updatedData.append("content", content);
+      updatedData.append("location", location);
+      updatedData.append("momentDate", momentDate);
+      updatedData.append("isPublic", isPublic);
+      updatedData.append("password", password);
+  
+      if (imageName) {
+        updatedData.append("image", imageName); // 새 이미지 업로드
+      }
+  
+      console.log("📌 수정 요청 데이터:", updatedData);
+  
+      // API 호출
+    const response = await axios.put(`${API_BASE_URL}/api/posts/${postId}`, updatedData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+  
+      if (response.status >= 200 && response.status < 300) {
+        alert("게시글이 성공적으로 수정되었습니다.");
+        
+        closePostEditModal(); // 모달 닫기
+
+        setTimeout(() => {
+          window.location.reload(); // ✅ 수정 후 페이지 새로고침
+        }, 100);
+
+      } else {
+        throw new Error(response.data?.message || "게시글 수정 실패");
+      }
+    } catch (error) {
+      console.error("게시글 수정 오류:", error);
+      alert(error.response?.data?.message || "게시글을 수정하는 중 오류가 발생했습니다.");
+    }
+  };
+
+  //게시글 삭제
+  const handleDeletePost = async () => {
+    try {
+      if (!postId) {
+        alert("게시글 ID를 찾을 수 없습니다.");
+        return;
+      }
+  
+      if (!deletePassword) {
+        alert("비밀번호를 입력하세요.");
+        return;
+      }
+  
+      if (!window.confirm("정말 이 게시글을 삭제하시겠습니까?")) {
+        return;
+      }
+  
+      // API 호출 (비밀번호 포함)
+      const response = await axios.delete(`${API_BASE_URL}/api/posts/${postId}`, {
+        data: { password: deletePassword }, // 비밀번호 전송
+      });
+  
+      if (response.status === 200) {
+        alert("게시글이 성공적으로 삭제되었습니다.");
+        closePostDeleteModal();
+        window.location.href = "/"; // 삭제 후 홈으로 이동
+      } else {
+        throw new Error("게시글 삭제 실패");
+      }
+    } catch (error) {
+      console.error("게시글 삭제 오류:", error);
+      alert(error.response?.data?.message || "게시글을 삭제하는 중 오류가 발생했습니다.");
+    }
+  };
+  
+  
+  
+
+
+
+  
 
   const openModal = (type) => {
     setModalType(type);
@@ -252,64 +311,7 @@ function ViewPostDetail() {
 
 
 
-    {/*}
-    checkPostIsPublic(postId)
-      .then(response => {
-        setIsPublic(response.data.isPublic);
-
-        if (response.data.isPublic) {
-          loadPostDetails();
-        } else {
-          setLoading(false); // 비공개 게시글일 경우 비밀번호 입력 대기
-        }
-      })
-      .catch(error => {
-        setError('Failed to check post visibility.');
-        setLoading(false);
-      });
-  }, [postId]);
-
-  const loadPostDetails = () => {
-    fetchPostById(postId)
-      .then(response => {
-        setPost(response.data);
-        setLoading(false);
-      })
-      .catch(error => {
-        setError('Failed to load post details.');
-        setLoading(false);
-      });
-  };
-
-  const handleLike = () => {
-    likePost(postId)
-      .then(() => {
-        setPost(prevPost => ({
-          ...prevPost,
-          likeCount: prevPost.likeCount + 1,
-        }));
-      })
-      .catch(error => {
-        setError('Failed to like the post.');
-      });
-  };
-
-  const handlePasswordSubmit = (e) => {
-    e.preventDefault();
-    setLoading(true);
-
-    verifyPostPassword(postId, password)
-      .then(() => {
-        loadPostDetails(); // 비밀번호가 맞으면 게시글 정보 로드
-      })
-      .catch(error => {
-        setError('Incorrect password.');
-        setLoading(false);
-      });
-  };
-
-  */}
-
+    
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
@@ -363,7 +365,7 @@ function ViewPostDetail() {
        <div className="post-comments" style={{ padding: '10px' }}>
         
         <ul style={{ listStyleType: 'none', padding: 0 }}>
-        {mockComments.map(comment => (
+        {post?.comments?.map(comment => (
           <li key={comment.id} style={{ marginBottom: '10px', padding: '10px', borderBottom: '1px solid #ccc', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ textAlign: 'left', flex: 1 }}>
               <p style={{ fontSize: '14px', marginBottom: '5px' }}>
@@ -501,7 +503,7 @@ function ViewPostDetail() {
           <h1 style={{ textAlign: 'center', fontSize: '24px', marginBottom: '20px' }}>추억 수정하기</h1>
           
           {/* 폼 태그로 감싸기 */}
-          <form onSubmit={handleEditSubmit}>
+          <form onSubmit={handleEditPost}>
             <div style={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
             <img src={closeIcon} alt="Close" style={{ position: 'absolute', top: '10px', right: '10px', cursor: 'pointer', width: '16px', height: '16px' }} onClick={closePostEditModal} />
               {/* 왼쪽 섹션 */}

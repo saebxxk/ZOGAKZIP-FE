@@ -33,9 +33,19 @@ export const fetchPostsByGroupId = async (groupId) => {
 
 
 // 3. 게시글 수정 
-export const updatePost = (postId, postData) => {
-  return axios.put(`${API_BASE_URL}/api/posts/${postId}`, postData);
+export const updatePost = async (postId, postData) => {
+  try {
+    const response = await axios.put(`${API_BASE_URL}/api/posts/${postId}`, postData, {
+      headers: { 'Content-Type': 'multipart/form-data' }, // FormData 처리
+    });
+    console.log("📌 게시글 수정 응답 데이터:", response.data); // 응답 데이터 디버깅
+    return response.data;
+  } catch (error) {
+    console.error("게시글 수정 오류:", error);
+    throw error; // 에러를 다시 던져 호출하는 쪽에서 처리하도록 함
+  }
 };
+
 
 // 4. 게시글 삭제 
 export const deletePost = (postId) => {
@@ -43,21 +53,50 @@ export const deletePost = (postId) => {
 };
 
 // 5. 게시글 상세 정보 조회 
-export const fetchPostById = (postId) => {
-  return axios.get(`${API_BASE_URL}/api/posts/${postId}`);
+export const fetchPostById = async (postId) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/api/posts/${postId}`);
+    return response.data;
+  } catch (error) {
+    console.error("게시글 조회 오류:", error);
+    throw error;
+  }
 };
 
-// 6. 게시글 조회 권한 확인 
-export const verifyPostPassword = (postId, password) => {
-  return axios.post(`${API_BASE_URL}/api/posts/${postId}/verify-password`, { password });
+// 6. 게시글 조회 권한 확인 (비밀번호 인증)
+export const verifyPostPassword = async (postId, password) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/api/posts/${postId}/verify-password`, { password });
+    console.log("📌 비밀번호 인증 응답 데이터:", response.data); // 응답 데이터 디버깅
+    return response.data; // 응답 데이터를 반환
+  } catch (error) {
+    console.error("비밀번호 인증 오류:", error); // 오류 디버깅
+    throw error; // 에러를 다시 던져 호출하는 쪽에서 처리하도록 함
+  }
 };
-
 // 7. 게시글 공감하기 
-export const likePost = (postId) => {
-  return axios.post(`${API_BASE_URL}/api/posts/${postId}/like`);
+export const likePost = async (postId) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/api/posts/${postId}/like`);
+    console.log("📌 공감 요청 응답 데이터:", response.data); // 응답 데이터 디버깅
+    return response.data; // 응답 데이터를 반환
+  } catch (error) {
+    console.error("공감 요청 오류:", error); // 오류 디버깅
+    throw error; // 에러를 다시 던져 호출하는 쪽에서 처리하도록 함
+  }
 };
 
 // 8. 게시글 공개 여부 확인 
-export const checkPostIsPublic = (postId) => {
-  return axios.get(`${API_BASE_URL}/api/posts/${postId}/is-public`);
+export const checkPostIsPublic = async (postId) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/api/posts/${postId}/is-public`);
+    console.log("📌 공개 여부 확인 응답 데이터:", response.data); // 응답 데이터 디버깅
+    return response.data; // 응답 데이터를 반환
+  } catch (error) {
+    console.error("공개 여부 확인 오류:", error); // 오류 디버깅
+    throw error; // 에러를 다시 던져 호출하는 쪽에서 처리하도록 함
+  }
 };
+
+
+
