@@ -96,6 +96,8 @@ function ViewPostDetail() {
   const handleToggleChange = () => {
     setIsPublic((prevIsPublic) => !prevIsPublic);
   };
+  console.log("📌 ViewPostDetail 렌더링됨, postId:", postId);
+
   useEffect(() => {
 
     if (postId === undefined || postId === null) {
@@ -111,7 +113,7 @@ function ViewPostDetail() {
         console.log("공개 여부 확인 응답 데이터:", visibilityResponse);
         setIsPublic(visibilityResponse.isPublic);
   
-        if (visibilityResponse.data.isPublic) {
+        if (visibilityResponse.isPublic) {
           // 공개 게시글일 경우 데이터 로드
           const postResponse = await fetchPostById(postId);
           console.log("📌 게시글 데이터:", postResponse.data);
