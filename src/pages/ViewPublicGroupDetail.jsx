@@ -99,9 +99,7 @@ function ViewPublicGroupDetail() {
   
       console.log('수정 요청 데이터:', updatedData); // 디버깅용 출력
   
-      // 백엔드 API 요청
-      //const response = await updateGroup(groupId, updatedData);
-      // ✅ `PUT` 요청으로 그룹 수정 요청
+      
     const response = await axios.put(`${API_BASE_URL}/api/groups/${groupId}`, updatedData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });

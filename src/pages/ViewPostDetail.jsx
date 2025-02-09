@@ -97,11 +97,19 @@ function ViewPostDetail() {
     setIsPublic((prevIsPublic) => !prevIsPublic);
   };
   useEffect(() => {
+
+    if (postId === undefined || postId === null) {
+      console.warn("🚨 postId가 아직 설정되지 않았습니다.");
+      return;
+    }
+  
+    console.log("✅ useEffect 실행됨, postId:", postId);
     const checkVisibilityAndLoad = async () => {
       try {
         // 게시글 공개 여부 확인
         const visibilityResponse = await checkPostIsPublic(postId);
-        setIsPublic(visibilityResponse.data.isPublic);
+        console.log("공개 여부 확인 응답 데이터:", visibilityResponse);
+        setIsPublic(visibilityResponse.isPublic);
   
         if (visibilityResponse.data.isPublic) {
           // 공개 게시글일 경우 데이터 로드
@@ -115,7 +123,7 @@ function ViewPostDetail() {
       } catch (error) {
         console.error("게시글 공개 여부 확인 실패:", error);
         setError("게시글 정보를 불러오는 중 오류가 발생했습니다.");
-        setLoading(false);
+        
       } finally {
         setLoading(false); // 항상 실행
       }
