@@ -55,13 +55,41 @@ export const deletePost = (postId) => {
 // 5. 게시글 상세 정보 조회 
 export const fetchPostById = async (postId) => {
   try {
+    console.log("📌 fetchPostById 실행됨, postId:", postId);
     const response = await axios.get(`${API_BASE_URL}/api/posts/${postId}`);
-    return response.data;
+    console.log("📌 게시글 API 응답:", response);
+
+    if (!response.data || !response.data.post) {
+      console.error("🚨 API 응답이 없습니다.");
+      return null;
+    }
+
+    console.log("✅ 반환될 게시글 데이터:", response.data.post); // 🔥 여기가 정상적으로 출력되는지 확인!
+
+    return response.data.post;
+  } catch (error) {
+    console.error("🚨 게시글 불러오기 오류:", error);
+    return null;
+  }
+};
+
+
+
+
+{/*}
+export const fetchPostById = async (postId) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/api/posts/${postId}`);
+    const postData = response.data?.post;
+
+    return postData;
+
+    
   } catch (error) {
     console.error("게시글 조회 오류:", error);
     throw error;
   }
-};
+};*/}
 
 // 6. 게시글 조회 권한 확인 (비밀번호 인증)
 export const verifyPostPassword = async (postId, password) => {

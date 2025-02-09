@@ -115,9 +115,23 @@ function ViewPostDetail() {
   
         if (visibilityResponse.isPublic) {
           // 공개 게시글일 경우 데이터 로드
+          console.log("✅ 게시글이 공개 상태입니다. 데이터 로드를 시작합니다.");
           const postResponse = await fetchPostById(postId);
-          console.log("📌 게시글 데이터:", postResponse.data);
-          setPost(postResponse.data);
+          console.log("📌 postResponse 값 확인 (받아온 데이터):", postResponse);
+
+          if (!postResponse) {
+            throw new Error("🚨 게시글 데이터를 불러오지 못했습니다.");
+          }
+    
+          console.log("📌 최종적으로 setPost에 저장될 데이터:", postResponse);
+          setPost(postResponse);
+
+          // 상태 업데이트 직후의 post 값을 로그로 확인
+            setTimeout(() => {
+              console.log("📌 상태 업데이트 후 post 값:", post);
+            }, 1000);
+
+
         } else {
           // 비공개 게시글일 경우 로딩 종료
           setLoading(false);
@@ -240,11 +254,16 @@ function ViewPostDetail() {
       if (!window.confirm("정말 이 게시글을 삭제하시겠습니까?")) {
         return;
       }
+
+      console.log("📌 삭제 요청 데이터:", { password: deletePassword });
+
   
       // API 호출 (비밀번호 포함)
       const response = await axios.delete(`${API_BASE_URL}/api/posts/${postId}`, {
         data: { password: deletePassword }, // 비밀번호 전송
       });
+
+      console.log("✅ 게시글 삭제 성공:", response);
   
       if (response.status === 200) {
         alert("게시글이 성공적으로 삭제되었습니다.");
