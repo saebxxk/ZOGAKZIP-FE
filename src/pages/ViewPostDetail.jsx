@@ -380,7 +380,7 @@ function ViewPostDetail() {
 
       {/* 중간부 */}
       <div className="post-content" style={{ padding: '20px', borderBottom: '1px solid #ccc', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', marginBottom: '80px' }}>
-        <img src={post.image} alt={post.title} style={{ width: '200px', height: '200px' }} />
+        <img src={post.image} alt={post.content} style={{ width: '200px', height: '200px' }} />
         <p style={{ fontSize: '16px', textAlign: 'center' }}>{post.description}</p>
         <button onClick={openCommentModal} style={{ fontSize: '14px', padding: '10px 20px', width: '300px', height: '40px', borderRadius:'6px', backgroundColor: 'black', color: 'white', cursor: 'pointer', marginBottom: '40px' }}>댓글 등록하기</button>
 
