@@ -74,23 +74,6 @@ export const fetchPostById = async (postId) => {
 };
 
 
-
-
-{/*}
-export const fetchPostById = async (postId) => {
-  try {
-    const response = await axios.get(`${API_BASE_URL}/api/posts/${postId}`);
-    const postData = response.data?.post;
-
-    return postData;
-
-    
-  } catch (error) {
-    console.error("게시글 조회 오류:", error);
-    throw error;
-  }
-};*/}
-
 // 6. 게시글 조회 권한 확인 (비밀번호 인증)
 export const verifyPostPassword = async (postId, password) => {
   try {
