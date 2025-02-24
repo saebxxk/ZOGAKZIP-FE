@@ -29,6 +29,8 @@ function ViewPublicGroupDetail() {
   const [password, setPassword] = useState('');
   const [likeCount, setLikeCount] = useState(0);
   const [image, setImage] = useState(null); // ✅ 이미지 상태 추가
+  const [refreshTrigger, setRefreshTrigger] = useState(0); // ✅ 새로운 상태 추가
+
 
 
 
@@ -179,7 +181,7 @@ function ViewPublicGroupDetail() {
     };
   
     fetchData();
-  }, [groupId]); // ✅ groupId가 변경될 때 한 번만 실행
+  }, [groupId, refreshTrigger]); // ✅ groupId가 변경될 때 한 번만 실행
   
 
 

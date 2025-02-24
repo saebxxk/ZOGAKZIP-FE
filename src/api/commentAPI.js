@@ -48,6 +48,12 @@ export const updateComment = async (commentId, commentData) => {
   };
   
 //4. 댓글 삭제
-export const deleteComment = (commentId) => {
-    return axios.delete(`${API_BASE_URL}/api/comments/${commentId}`);
-  };
+//export const deleteComment = (commentId) => {
+    //return axios.delete(`${API_BASE_URL}/api/comments/${commentId}`);
+  //};
+
+  export const deleteComment = (postId, commentId, password) => {
+    return axios.delete(`${API_BASE_URL}/api/posts/${postId}/comments/${commentId}`, {
+        data: { password }  // ✅ DELETE 요청에서도 body 데이터 전달 가능하게 설정
+    });
+};

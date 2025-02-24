@@ -10,7 +10,7 @@ import closeIcon from '../assets/icons/icon=x.svg';
 import axios from 'axios';
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://zogakzip-be-c3c2.onrender.com';
 
-function ViewPostDetail() {
+function ViewPostDetail(setRefreshTrigger) {
   const { postId } = useParams();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -99,9 +99,35 @@ function ViewPostDetail() {
   };
   console.log("📌 ViewPostDetail 렌더링됨, postId:", postId);
 
+  const fetchData = async () => {
+    try {
+      console.log("📌 최신 데이터 불러오기 시작");
+  
+      const postResponse = await fetchPostById(postId);
+      const commentsResponse = await fetchCommentByPostId(postId);
+  
+      console.log("📌 최신 게시글 데이터:", postResponse);
+      console.log("📌 최신 댓글 목록 데이터:", commentsResponse);
+  
+      setPost({
+        ...postResponse,
+        comments: commentsResponse || [],
+        commentCount: commentsResponse?.length || 0, // 댓글 개수 업데이트
+      });
+  
+    } catch (error) {
+      console.error("🚨 데이터 로딩 오류:", error);
+      setError("데이터를 불러오는 중 오류가 발생했습니다.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+
   useEffect(() => {
 
-    
+    if (!postId) return;
+    fetchData();  // ✅ 초기 데이터 로드
 
     if (postId === undefined || postId === null) {
       console.warn("🚨 postId가 아직 설정되지 않았습니다.");
@@ -125,9 +151,17 @@ function ViewPostDetail() {
           if (!postResponse) {
             throw new Error("🚨 게시글 데이터를 불러오지 못했습니다.");
           }
-    
-          console.log("📌 최종적으로 setPost에 저장될 데이터:", postResponse);
-          setPost(postResponse);
+
+          // 3️⃣ 댓글 데이터 가져오기 (추가된 부분)
+        const commentsResponse = await fetchCommentByPostId(postId);
+        console.log("📌 댓글 목록 응답 데이터:", commentsResponse);
+
+        // 4️⃣ 상태 업데이트 (게시글 + 댓글 포함)
+        setPost({
+          ...postResponse,
+          comments: commentsResponse || [], // ✅ undefined 방지
+          commentCount: commentsResponse?.length || 0,
+        });
 
 
         } else {
@@ -148,12 +182,6 @@ function ViewPostDetail() {
     }
   }, [postId]);
 
-  useEffect(() => {
-    console.log("📌 post 상태 변경 감지됨:", post);
-    if (post?.comments) {
-      console.log("📌 post.comments 값:", post.comments);
-    }
-  }, [post]); // ✅ post 상태가 변경될 때마다 실행
   
   const handleLike = async () => {
     try {
@@ -300,7 +328,7 @@ function ViewPostDetail() {
       };
 
       const response = await createComment(postId, newComment); // ✅ `axios.post` 대신 `createComment` 사용
-
+      console.log("📌 댓글 등록 응답 데이터:", response);
     if (response) {
       alert("댓글이 성공적으로 등록되었습니다.");
       setComment(""); 
@@ -308,29 +336,83 @@ function ViewPostDetail() {
       setNickname("");
       closeCommentModal();
 
-      // 최신 댓글 목록 다시 불러오기
-      const updatedPost = await fetchPostById(postId);
-      console.log("📌 댓글 등록 후 최신 post 데이터:", updatedPost);
-      // 상태 업데이트 시 함수형 업데이트 사용
-      setPost(prevPost => {
-        console.log("📌 상태 업데이트 이전 prevPost 값:", prevPost);
-        return {
-          ...prevPost,
-          comments: updatedPost?.comments || [],
-        };
-      });
-
-      setTimeout(() => {
-        console.log("📌 상태 업데이트 후 post 값:", post);
-      }, 500);
-    }
-      
-    
+      // 🔥 최신 데이터 즉시 반영
+      fetchData();  
+      }
+        
   } catch (error) {
     console.error("댓글 등록 오류:", error);
     alert("댓글을 등록하는 중 오류가 발생했습니다.");
   }
 };
+
+const handleEditComment = async () => {
+  if (!currentComment || !commentPassword.trim()) {
+    alert("비밀번호를 입력하세요.");
+    return;
+  }
+
+  try {
+    const updatedComment = {
+      content: comment,
+      password: commentPassword, 
+    };
+
+    console.log("📌 댓글 수정 요청 데이터:", updatedComment);
+
+    // ✅ 백엔드 API 요구사항에 맞게 PUT 요청 실행
+    const response = await axios.put(`${API_BASE_URL}/api/comments/${currentComment.id}`, updatedComment);
+
+    if (response.status === 200) {
+      alert("✅ 댓글이 성공적으로 수정되었습니다.");
+      closeEditModal();
+      // ✅ 최신 댓글 목록 즉시 반영
+      fetchData();  
+    } else {
+      throw new Error("❌ 댓글 수정 실패");
+    }
+    
+  } catch (error) {
+    console.error("🚨 댓글 수정 오류:", error);
+    alert(error.response?.data?.message || "댓글 수정에 실패했습니다.");
+  }
+};
+
+
+const handleDeleteComment = async () => {
+  if (!currentComment || !commentPassword.trim()) {
+    alert("비밀번호를 입력하세요.");
+    return;
+  }
+
+  try {
+    console.log("📌 댓글 삭제 요청, commentId:", currentComment.id);
+
+    // ✅ 백엔드 API 요구사항에 맞게 삭제 요청
+    const response = await axios.delete(`${API_BASE_URL}/api/comments/${currentComment.id}`, {
+      data: { password: commentPassword } // ✅ 비밀번호 전송
+    });
+
+    if (response.status === 200) {
+      alert("댓글이 삭제되었습니다.");
+      closeDeleteModal();
+      // ✅ 최신 댓글 목록 즉시 반영
+      fetchData(); 
+      // ✅ 그룹 페이지에서도 댓글 수 반영하도록 트리거 변경
+      setRefreshTrigger(prev => prev + 1);
+
+      
+    } else {
+      throw new Error("댓글 삭제 실패");
+    }
+  } catch (error) {
+    console.error("🚨 댓글 삭제 오류:", error);
+    alert(error.response?.data?.message || "댓글 삭제에 실패했습니다.");
+  }
+};
+
+
+
   
       
   
@@ -360,6 +442,8 @@ function ViewPostDetail() {
 
   const openEditModal = (comment) => {
     setCurrentComment(comment);
+    setComment(comment.content);
+    setCommentPassword("");
     setIsEditModalOpen(true);
   };
 
@@ -383,15 +467,9 @@ function ViewPostDetail() {
     closeCommentModal(); // 등록 후 모달 닫기
   };*/}
 
-  const handleEditComment = () => {
-    // 댓글 수정 로직
-    closeEditModal(); // 수정 후 모달 닫기
-  };
+ 
 
-  const handleDeleteComment = () => {
-    // 댓글 삭제 로직
-    closeDeleteModal(); // 삭제 후 모달 닫기
-  };
+  
 
 
 
