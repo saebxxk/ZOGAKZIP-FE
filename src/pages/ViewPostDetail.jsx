@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchPostById, likePost, verifyPostPassword, checkPostIsPublic } from '../api/postAPI';
+import { createComment, fetchCommentByPostId, updateComment, deleteComment } from '../api/commentAPI';
 import CommentList from '../components/Comment/CommentList';
 import CommentForm from '../components/Comment/CommentForm';
 import editIcon from '../assets/icons/icon=edit.svg';
@@ -100,6 +101,8 @@ function ViewPostDetail() {
 
   useEffect(() => {
 
+    
+
     if (postId === undefined || postId === null) {
       console.warn("🚨 postId가 아직 설정되지 않았습니다.");
       return;
@@ -126,11 +129,6 @@ function ViewPostDetail() {
           console.log("📌 최종적으로 setPost에 저장될 데이터:", postResponse);
           setPost(postResponse);
 
-          // 상태 업데이트 직후의 post 값을 로그로 확인
-            setTimeout(() => {
-              console.log("📌 상태 업데이트 후 post 값:", post);
-            }, 1000);
-
 
         } else {
           // 비공개 게시글일 경우 로딩 종료
@@ -149,6 +147,13 @@ function ViewPostDetail() {
       checkVisibilityAndLoad();
     }
   }, [postId]);
+
+  useEffect(() => {
+    console.log("📌 post 상태 변경 감지됨:", post);
+    if (post?.comments) {
+      console.log("📌 post.comments 값:", post.comments);
+    }
+  }, [post]); // ✅ post 상태가 변경될 때마다 실행
   
   const handleLike = async () => {
     try {
@@ -277,6 +282,57 @@ function ViewPostDetail() {
       alert(error.response?.data?.message || "게시글을 삭제하는 중 오류가 발생했습니다.");
     }
   };
+
+
+  const handleSubmitComment = async () => {
+    console.log("✅ handleSubmitComment 실행됨"); // 함수 실행 여부 확인
+    if (!nickname.trim() || !comment.trim() || !commentPassword.trim()) {
+      alert("닉네임, 댓글, 비밀번호를 입력하세요.");
+      return;
+    }
+  
+    try {
+      const newComment = {
+        postId,
+        nickname,
+        content: comment,
+        password: commentPassword,
+      };
+
+      const response = await createComment(postId, newComment); // ✅ `axios.post` 대신 `createComment` 사용
+
+    if (response) {
+      alert("댓글이 성공적으로 등록되었습니다.");
+      setComment(""); 
+      setCommentPassword("");
+      setNickname("");
+      closeCommentModal();
+
+      // 최신 댓글 목록 다시 불러오기
+      const updatedPost = await fetchPostById(postId);
+      console.log("📌 댓글 등록 후 최신 post 데이터:", updatedPost);
+      // 상태 업데이트 시 함수형 업데이트 사용
+      setPost(prevPost => {
+        console.log("📌 상태 업데이트 이전 prevPost 값:", prevPost);
+        return {
+          ...prevPost,
+          comments: updatedPost?.comments || [],
+        };
+      });
+
+      setTimeout(() => {
+        console.log("📌 상태 업데이트 후 post 값:", post);
+      }, 500);
+    }
+      
+    
+  } catch (error) {
+    console.error("댓글 등록 오류:", error);
+    alert("댓글을 등록하는 중 오류가 발생했습니다.");
+  }
+};
+  
+      
   
   
   
@@ -322,10 +378,10 @@ function ViewPostDetail() {
     setCurrentComment(null);
   };
 
-  const handleSubmitComment = () => {
+  {/*const handleSubmitComment = () => {
     // 댓글 등록 로직 구현
     closeCommentModal(); // 등록 후 모달 닫기
-  };
+  };*/}
 
   const handleEditComment = () => {
     // 댓글 수정 로직
@@ -414,6 +470,8 @@ function ViewPostDetail() {
           </li>
         ))}
       </ul>
+
+      
 
 
 

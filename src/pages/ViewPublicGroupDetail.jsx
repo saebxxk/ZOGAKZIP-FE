@@ -126,25 +126,6 @@ function ViewPublicGroupDetail() {
   };
   
 
-
-  {/*const handleGroupUpdate = async (e) => {
-    e.preventDefault();
-    const updatedData = {
-      name,
-      description,
-      isPublic,
-      imageName,
-    };
-    try {
-      await updateGroup(groupId, updatedData);
-      alert('그룹이 성공적으로 수정되었습니다.');
-      closeGroupEditModal();
-    } catch (error) {
-      console.error('그룹 수정 실패:', error);
-      alert('그룹 수정에 실패했습니다.');
-    }
-  };*/}
-
   // 이미지 변경 핸들러 추가
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -162,147 +143,30 @@ function ViewPublicGroupDetail() {
     }
   };
   
-  {/*useEffect(() => {
+  
+  useEffect(() => {
     const fetchData = async () => {
       try {
-        // 🔥 그룹 정보 & 게시글 목록을 병렬로 가져옴
+        // 🔥 그룹 정보와 게시글을 병렬로 가져오기
         const [groupResponse, postsResponse] = await Promise.all([
           fetchGroupById(groupId),
           fetchPostsByGroupId(groupId)
         ]);
   
         console.log("📌 그룹 데이터 응답:", groupResponse);
-        console.log("📌 그룹 게시글 목록 응답:", postsResponse);
-
-        const groupData = groupResponse.data;
-        const postsData = postsResponse.data || [];
-        console.log("✅ 저장할 게시글 개수:", postsData.length, "postsData:", postsData);
-
-        if (groupData) {
-          // ✅ 비동기 상태 업데이트를 위해 setState 내부에서 이전 값(prevData) 사용
-          setGroupData((prevData) => ({
-            ...prevData,
-            ...groupData,
-            posts: postsData, // ✅ 게시글 데이터 추가
-          }));
-  
-          // ✅ 개별 상태 업데이트 (groupData 사용)
-          setGroupName(groupData.name);
-          setDescription(groupData.description);
-          setIsPublic(groupData.isPublic);
-          setImageName(groupData.imageName);
-          setLikeCount(groupData.likeCount);
-        } else {
-          setError("Failed to fetch group data.");
-        }
-      } catch (error) {
-        console.error("🚨 데이터 불러오기 오류:", error);
-        setError("Error fetching group data.");
-      } finally {
-        setLoading(false);
-      }
-    };
-  
-    fetchData();
-  }, [groupId]);*/}
-        {/*if (groupData) {
-          console.log("✅ 저장할 그룹 이름:", groupData.name);
-          console.log("✅ 저장할 그룹 설명:", groupData.description);
-          console.log("✅ 저장할 게시글 개수:", postsData.length);
-
-          // ✅ 그룹 데이터 업데이트
-        setGroupData({
-          ...groupData,
-          posts: postsData  // posts도 data 안에 있는지 확인
-        });
-
-        // ✅ 개별 상태 업데이트 (groupData 사용)
-        setGroupName(groupData.name);
-        setDescription(groupData.description);
-        setIsPublic(groupData.isPublic);
-        setImageName(groupData.imageName);
-        setLikeCount(groupData.likeCount);
-  
-        
-  
-          // 🔥 그룹 상세 정보를 상태에 반영
-          
-        } else {
-          setError("Failed to fetch group data.");
-        }
-      } catch (error) {
-        console.error("🚨 데이터 불러오기 오류:", error);
-        setError("Error fetching group data.");
-      } finally {
-        setLoading(false);
-      }
-    };
-  
-    fetchData();
-  }, [groupId]); */}
-  
-  
-  {/*useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // 🔥 1. 그룹 정보 가져오기
-        const groupResponse = await fetchGroupById(groupId);
-        console.log("📌 그룹 데이터 응답:", groupResponse);
-  
-        if (groupResponse) {
-          setGroupData(groupResponse); // 그룹 정보 저장
-          setGroupName(groupResponse.name);
-          setDescription(groupResponse.description);
-          setIsPublic(groupResponse.isPublic);
-          setImageName(groupResponse.imageName);
-          setLikeCount(groupResponse.likeCount);
-  
-          // 🔥 2. 해당 그룹의 게시글 목록 가져오기
-          const postsResponse = await fetchPostsByGroupId(groupId);
-          console.log("📌 그룹 게시글 목록 응답:", postsResponse);
-  
-          // `groupData`에 `posts` 필드 추가
-          setGroupData((prevData) => ({
-            ...prevData,
-            posts: postsResponse || [] // ✅ postsResponse가 없으면 빈 배열을 할당
-          }));
-        } else {
-          setError("Failed to fetch group data.");
-        }
-      } catch (error) {
-        console.error("🚨 데이터 불러오기 오류:", error);
-        setError("Error fetching group data.");
-      } finally {
-        setLoading(false);
-      }
-    };
-  
-    fetchData();
-  }, [groupId]);*/}
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // ✅ 그룹 정보와 게시글을 병렬로 가져옴 (Promise.all 사용)
-        const [groupResponse, postsResponse] = await Promise.all([
-          fetchGroupById(groupId),  // 그룹 정보 가져오기
-          fetchPostsByGroupId(groupId) // 해당 그룹의 게시글 목록 가져오기
-        ]);
-  
-        console.log("📌 그룹 데이터 응답:", groupResponse);
         console.log("📌 게시글 목록 응답:", postsResponse);
   
-        if (groupResponse) {
+        // ✅ groupResponse.data를 사용하여 그룹 정보가 올바르게 설정되도록 보장
+        if (groupResponse && groupResponse.data) {
           setGroupData({
-            ...groupResponse, // 기존 그룹 정보
-            posts: postsResponse || [] // 게시글 데이터 추가 (없으면 빈 배열)
+            ...groupResponse.data, // ✅ 그룹 정보 유지
+            posts: postsResponse || [] // ✅ 게시글 데이터 추가
           });
   
-          // ✅ 개별 상태 업데이트 (렌더링 보장)
-          //setGroupName(groupResponse.name || ''); // 혹시 null 방지
-          //setDescription(groupResponse.description || ''); 
-          setIsPublic(groupResponse.isPublic);
-          setImageName(groupResponse.imageName || '');
-          setLikeCount(groupResponse.likeCount || 0);
+          // ✅ 개별 상태 업데이트
+          setIsPublic(groupResponse.data.isPublic);
+          setImageName(groupResponse.data.imageName || '');
+          setLikeCount(groupResponse.data.likeCount || 0);
         } else {
           setError("그룹 정보를 불러오지 못했습니다.");
         }
@@ -315,36 +179,9 @@ function ViewPublicGroupDetail() {
     };
   
     fetchData();
-  }, [groupId]); // ✅ 의존성 배열 확인 (groupId 변경 시 한 번만 실행)
+  }, [groupId]); // ✅ groupId가 변경될 때 한 번만 실행
   
-  
 
-  {/*useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetchGroupById(groupId);
-        console.log("📌 그룹 데이터 응답:", response.data); // 그룹 데이터 구조 확인
-        //console.log("📌 그룹 데이터 응답:", groupResponse);
-
-
-        if (response.status === 200) {
-          setGroupData(response.data);
-          setGroupName(response.data.name);
-          setDescription(response.data.description);
-          setIsPublic(response.data.isPublic);
-          setImageName(response.data.imageName);
-          setLikeCount(response.data.likeCount);
-        } else {
-          setError('Failed to fetch group data.');
-        }
-      } catch (error) {
-        setError('Error fetching group data.');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [groupId]);*/}
 
   const handlePublicClick = () => {
     setFilter('공개'); // 공개 필터 적용
@@ -533,9 +370,34 @@ const handlePrivateClick = () => {
         {/* 추억 목록 표시 */}
         {filteredMemories.length > 0 ? (
           <>
-            <div style={{ width: '1300px', borderRadius: '20px', padding: '20px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', margin: 'auto' }}>
+            <div style={{ 
+              maxWidth: '100%',
+              width: '90%',
+              height: 'auto', 
+              borderRadius: '20px', 
+              padding: '20px', 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(4, 1fr)',
+              gridAutoRows: 'minmax(140px, auto)', // 고정된 높이 
+              gap: '20px', 
+              margin: 'auto', 
+              overflowX: 'hidden' 
+              }}>
+
               {filteredMemories.map((memory) => (
-                <div key={memory.id} style={{ width: '320px', height: '140px', border: '1px solid #ccc', borderRadius: '10px', padding: '10px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', cursor: 'pointer' }}
+                <div key={memory.id} 
+                style={{ 
+                  width: '320px', 
+                  //maxWidth: '320px', 
+                  height: '140px', 
+                  border: '1px solid #ccc', 
+                  borderRadius: '10px', 
+                  padding: '10px', 
+                  display: 'flex', 
+                  flexDirection: 'column', 
+                  justifyContent: 'space-between', 
+                  cursor: 'pointer' 
+                }}
                 onClick={() => handlePostClick(memory.id)} // ✅ 게시글 클릭 시 이동
                 >
                   

@@ -17,7 +17,7 @@ function CheckPrivateGroup() {
 
       verifyGroupPassword(groupId, password)
         .then(() => {
-          navigate(`/view-private-group-detail/${groupId}`);
+          navigate(`/view-private-group-detail/${groupId}`, { state: { isVerified: true } });
         })
         .catch(() => {
           setError('Incorrect password.');

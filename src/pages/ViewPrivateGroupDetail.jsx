@@ -4,9 +4,15 @@ import { fetchGroupById, updateGroup, verifyGroupPassword } from '../api/groupAP
 import groupIcon from '../assets/icons/groupicon.svg'; // 아이콘 경로
 import closeIcon from '../assets/icons/icon=x.svg';
 import { likeGroup } from '../api/groupAPI';
+import axios from 'axios';
+import { useLocation } from "react-router-dom";
+import { fetchPostsByGroupId } from '../api/postAPI'; // ✅ postAPI에서 가져오기
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://zogakzip-be-c3c2.onrender.com';
+
 
 function ViewPrivateGroupDetail() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { groupId } = useParams();
   const [groupData, setGroupData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -24,7 +30,8 @@ function ViewPrivateGroupDetail() {
   const [likeCount, setLikeCount] = useState(0);
   const [isGroupDeleteModalOpen, setIsGroupDeleteModalOpen] = useState(false);
   const [groupPassword, setGroupPassword] = useState('');
-  const [isVerified, setIsVerified] = useState(false); // 비밀번호 인증 상태
+  //const [isVerified, setIsVerified] = useState(false); // 비밀번호 인증 상태
+  const [isVerified, setIsVerified] = useState(location.state?.isVerified || false);
 
   // 삭제 모달 열기/닫기 함수
   const openGroupDeleteModal = () => setIsGroupDeleteModalOpen(true);
@@ -39,7 +46,9 @@ function ViewPrivateGroupDetail() {
     e.preventDefault();
     try {
       const response = await verifyGroupPassword(groupId, groupPassword);
+      console.log("📌 비밀번호 검증 응답:", response); // ✅ 응답 확인용 로그
       if (response.status === 200) {
+        console.log("✅ 비밀번호 인증 성공");
         setIsVerified(true);
         fetchGroupData();
         alert('비밀번호 인증 성공!');
@@ -54,14 +63,23 @@ function ViewPrivateGroupDetail() {
 
   const fetchGroupData = async () => {
     try {
+      console.log("📌 그룹 데이터 요청 시작:", groupId); // ✅ 그룹 ID 확인
       const response = await fetchGroupById(groupId);
+
+      console.log("📌 API 응답 데이터:", response); // ✅ API 응답 확인
+
       if (response.status === 200) {
+        console.log("✅ 그룹 데이터 설정 완료");
         setGroupData(response.data);
         setLikeCount(response.data.likeCount);
+        setLoading(false); // ✅ 로딩 완료
+
       } else {
+        console.error("🚨 그룹 데이터를 가져오지 못했습니다.");
         setError('그룹 정보를 가져오지 못했습니다.');
       }
     } catch (error) {
+      console.error("🚨 그룹 데이터를 가져오는 중 오류 발생:", error);
       setError('그룹 정보를 가져오는 중 오류가 발생했습니다.');
     } finally {
       setLoading(false);
@@ -111,6 +129,8 @@ function ViewPrivateGroupDetail() {
   };
 
   useEffect(() => {
+
+    console.log("📌 useEffect 실행됨, isVerified:", isVerified);
     if (isVerified) {
       fetchGroupData();
     }

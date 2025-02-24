@@ -76,9 +76,22 @@ export const fetchGroupById = async (groupId) => {
 
 
 
-// 6. 비공개 그룹에 접근할 수 있는지 비밀번호 확인
+{/*// 6. 비공개 그룹에 접근할 수 있는지 비밀번호 확인
 export const verifyGroupPassword = async (groupId, password) => {
   return axios.post(`${API_BASE_URL}/api/groups/${groupId}/verify-password`, { password });
+};*/}
+export const verifyGroupPassword = async (groupId, password) => {
+  console.log(`📌 verifyGroupPassword 호출됨: groupId=${groupId}, password=${password}`);
+
+  return axios.post(`${API_BASE_URL}/api/groups/${groupId}/verify-password`, { password })
+    .then(response => {
+      console.log("📌 비밀번호 검증 API 응답 데이터:", response.data);
+      return response;
+    })
+    .catch(error => {
+      console.error("🚨 비밀번호 검증 API 오류:", error.response?.data || error);
+      throw error;
+    });
 };
 
 
