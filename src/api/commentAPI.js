@@ -47,13 +47,20 @@ export const updateComment = async (commentId, commentData) => {
     }
   };
   
-//4. 댓글 삭제
-//export const deleteComment = (commentId) => {
-    //return axios.delete(`${API_BASE_URL}/api/comments/${commentId}`);
-  //};
 
-  export const deleteComment = (postId, commentId, password) => {
-    return axios.delete(`${API_BASE_URL}/api/posts/${postId}/comments/${commentId}`, {
-        data: { password }  // ✅ DELETE 요청에서도 body 데이터 전달 가능하게 설정
-    });
-};
+// 4. 댓글 삭제 (API 엔드포인트 수정)
+export const deleteComment = async (commentId, password) => {
+    try {
+      const response = await axios.delete(`${API_BASE_URL}/api/comments/${commentId}`, {
+        data: { password } // ✅ 비밀번호 포함하여 요청
+      });
+  
+      console.log("📌 댓글 삭제 응답 데이터:", response.data);
+      return response;
+    } catch (error) {
+      console.error("🚨 댓글 삭제 오류:", error);
+      throw error;
+    }
+  };
+  
+  
