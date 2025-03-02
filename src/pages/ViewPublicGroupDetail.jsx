@@ -7,6 +7,7 @@ import deleteIcon from '../assets/icons/icon=delete.svg';
 import closeIcon from '../assets/icons/icon=x.svg';
 import { likeGroup } from '../api/groupAPI';
 import axios from 'axios';
+import { uploadImage } from '../api/imageAPI';
 import { fetchPostsByGroupId } from '../api/postAPI'; // ✅ postAPI에서 가져오기 (경로는 프로젝트 구조에 따라 수정)
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://zogakzip-be-c3c2.onrender.com';
@@ -54,6 +55,35 @@ function ViewPublicGroupDetail() {
     console.log('그룹 삭제 비밀번호:', groupPassword);
     closeGroupDeleteModal(); // 삭제 완료 후 모달 닫기
   };*/}
+
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    try {
+        console.log("📌 업로드 시작, 파일명:", file.name);
+        
+        const uploadedImageUrl = await uploadImage(file); // ✅ `uploadImage` API 호출
+
+        console.log("✅ 업로드 성공, imageUrl:", uploadedImageUrl);
+
+        // ✅ 업로드된 이미지 URL을 `groupData.imageUrl`에 반영
+        setGroupData((prev) => ({
+            ...prev,
+            imageUrl: uploadedImageUrl
+        }));
+
+        setImage(uploadedImageUrl); // ✅ `setImage` 상태 업데이트
+    } catch (error) {
+        console.error("🚨 이미지 업로드 실패:", error);
+        alert("이미지 업로드에 실패했습니다.");
+    }
+};
+
+
+console.log("📌 이미지 URL:", groupData?.imageUrl);
+
+
 
   const handleGroupDelete = async () => {
     try {
@@ -144,7 +174,8 @@ function ViewPublicGroupDetail() {
       console.error("공감 처리 중 오류가 발생했습니다.", error);
     }
   };
-  
+ 
+
   
   useEffect(() => {
     const fetchData = async () => {
@@ -157,6 +188,8 @@ function ViewPublicGroupDetail() {
   
         console.log("📌 그룹 데이터 응답:", groupResponse);
         console.log("📌 게시글 목록 응답:", postsResponse);
+        console.log("📌 현재 이미지 URL:", groupData?.imageUrl);
+       
   
         // ✅ groupResponse.data를 사용하여 그룹 정보가 올바르게 설정되도록 보장
         if (groupResponse && groupResponse.data) {
@@ -226,8 +259,28 @@ const handlePrivateClick = () => {
       {/* 상단부 */}
       <div className="group-header" style={{ marginBottom: '20px', display: 'flex' }}>
         <div className="group-image" style={{ flex: '1', marginRight: '20px' }}>
-          <img src={groupData.image || 'default-image-url'} alt={groupData.name} style={{ width: '100%', height: 'auto', borderRadius: '8px' }} />
+          {/*<img src={groupData.image || 'default-image-url'} alt={groupData.name} style={{ width: '100%', height: 'auto', borderRadius: '8px' }} />
         </div>
+        <img 
+  src={groupData?.imageUrl?.replace("http://", "https://") || "https://your-bucket.s3.amazonaws.com/default-image.jpg"} 
+  alt={groupData?.name || "그룹 이미지"} 
+  style={{ width: '100%', height: 'auto', borderRadius: '8px' }} 
+  onError={(e) => e.target.src = "https://your-bucket.s3.amazonaws.com/default-image.jpg"} 
+/>*/}
+<img 
+  src="http://zogakzip-be-c3c2.onrender.com/uploads/1740399354113-.jpg" 
+  alt="테스트 이미지" 
+  style={{ width: '100%', height: 'auto', borderRadius: '8px' }} 
+/>
+
+
+       
+
+
+        
+  
+</div>
+
 
         <div className="group-info" style={{ flex: '2', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <div className="header-top" style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '10px', borderBottom: '1px solid #ccc' }}>
@@ -519,7 +572,8 @@ const handlePrivateClick = () => {
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <input
               type="text"
-              value={imageName}
+              //value={imageName}
+              value={groupData?.imageUrl || ''}
               placeholder="파일을 선택해 주세요"
               readOnly
               style={{ flex: 3, padding: '8px', marginRight: '15px' }}
@@ -542,7 +596,7 @@ const handlePrivateClick = () => {
               <input
                 id="file-upload"
                 type="file"
-                onChange={handleImageChange}
+                onChange={handleImageUpload}
                 accept="image/*"
                 style={{ display: 'none' }}
               />

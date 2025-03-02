@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createGroup, updateGroup } from '../api/groupAPI.js';
+import { uploadImage } from '../api/imageAPI';
 
 function CreateGroup({ group, isEditMode }) {
   const [name, setGroupName] = useState(group?.name || '');
+  const [imageUrl, setImageUrl] = useState(''); // ✅ 이미지 URL 저장
+
   const [image, setImage] = useState(null);
   const [imageName, setImageName] = useState(group?.image || '');
   const [description, setDescription] = useState(group?.description || '');
@@ -15,6 +18,13 @@ function CreateGroup({ group, isEditMode }) {
   const [modalMessage, setModalMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
   const [newGroupId, setNewGroupId] = useState(null);
+  const [groupData, setGroupData] = useState({
+    name: '',
+    introduction: '',
+    isPublic: true,
+    imageUrl: '', // ✅ 이미지 URL 저장할 상태 추가
+});
+
 
   const navigate = useNavigate();
 
@@ -27,6 +37,31 @@ function CreateGroup({ group, isEditMode }) {
   const handleToggleChange = () => {
     setIsPublic(!isPublic);
   };
+
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    try {
+        console.log("📌 업로드 시작, 파일명:", file.name);
+        
+        const uploadedImageUrl = await uploadImage(file); // ✅ `uploadImage` API 호출
+
+        console.log("✅ 업로드 성공, imageUrl:", uploadedImageUrl);
+
+        // ✅ 업로드된 이미지 URL을 `groupData.imageUrl`에 반영
+        setGroupData((prev) => ({
+            ...prev,
+            imageUrl: uploadedImageUrl
+        }));
+
+        setImage(uploadedImageUrl); // ✅ `setImage` 상태 업데이트
+    } catch (error) {
+        console.error("🚨 이미지 업로드 실패:", error);
+        alert("이미지 업로드에 실패했습니다.");
+    }
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -114,7 +149,7 @@ function CreateGroup({ group, isEditMode }) {
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <input
                 type="text"
-                value={imageName}
+                value={imageUrl}
                 placeholder="파일을 선택해 주세요"
                 readOnly
                 style={{ flex: 3, padding: '8px', boxSizing: 'border-box', marginRight: '15px' }}
@@ -140,7 +175,7 @@ function CreateGroup({ group, isEditMode }) {
                 <input
                   id="file-upload"
                   type="file"
-                  onChange={handleImageChange}
+                  onChange={handleImageUpload}
                   accept="image/*"
                   style={{ display: 'none' }}
                 />

@@ -32,3 +32,4 @@ export const uploadImage = async (imageFile) => {
         throw error;
     }
 };
+

@@ -22,7 +22,6 @@ function ViewPostDetail(setRefreshTrigger) {
   
 
   //   댓글 모달 창
-  g
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false); // 댓글 수정 모달 상태 추가
   const [currentComment, setCurrentComment] = useState(null); // 수정할 댓글 데이터 저장
